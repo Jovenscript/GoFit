@@ -127,12 +127,14 @@
                 <h3 class="gradient-text-sub">Plano Alimentar</h3>
                 <span class="status-badge glass-effect">Dieta</span>
             </div>
-            <div id="meals-carousel" class="carousel meals-carousel"></div>
+            <div id="meals-carousel" class="carousel meals-carousel">
+                </div>
         </section>
 
         <div class="card glass-effect spotlight-card fade-in-up" style="margin-top: 20px; animation-delay: 0.3s; margin-bottom: 40px;">
             <h3 class="gradient-text-sub" style="margin-bottom: 20px;">Consumo Hoje</h3>
-            <div id="food-log"></div>
+            <div id="food-log">
+                </div>
         </div>
     </div>
 
@@ -146,7 +148,8 @@
         
         <div class="card glass-effect spotlight-card fade-in-up" style="animation-delay: 0.2s;">
             <h3 id="workout-title" class="gradient-text-sub">Treino A</h3>
-            <div id="workout-list"></div>
+            <div id="workout-list">
+                </div>
         </div>
     </div>
 
@@ -187,12 +190,18 @@
         <div class="modal-content glass-effect bottom-sheet" id="modal-content-container">
             <div class="drag-handle"></div>
             
-            <div id="builder-step-1">
+            <div id="builder-step-1" style="display: flex; flex-direction: column; height: 100%;">
                 <div class="modal-header">
-                    <h3 id="modal-meal-name" class="gradient-text-sub">Escolher Alimento Base</h3>
+                    <h3 id="modal-meal-name" class="gradient-text-sub">Escolher Alimento</h3>
                     <button class="close-btn glass-effect hover-scale" onclick="closeFoodModal()">✕</button>
                 </div>
-                <div class="food-db-list" id="food-db-list"></div>
+                
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <input type="text" id="food-search" class="form-control" placeholder="🔍 Buscar alimento ou bebida..." onkeyup="filterFoods()">
+                </div>
+
+                <div class="food-db-list" id="food-db-list" style="flex: 1; overflow-y: auto;">
+                    </div>
             </div>
 
             <div id="builder-step-2" class="hidden">
@@ -217,7 +226,7 @@
                         
                         <div id="prep-method-container" class="hidden" style="margin-top: 15px;">
                             <label style="font-size:12px; color:var(--text-light); display:block; margin-bottom:5px;">Modo de Preparo</label>
-                            <select id="build-prep-select" class="form-control" style="padding:10px;" onchange="updateLivePreview()">
+                            <select id="build-prep-select" class="form-control" style="padding:10px; font-size: 14px;" onchange="updateLivePreview()">
                             </select>
                         </div>
                     </div>
