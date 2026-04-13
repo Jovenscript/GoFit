@@ -9,8 +9,8 @@
     <meta name="theme-color" content="#020617">
     <title>GoFit</title>
     
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192x192.jpg">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="./icon-192x192.png">
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -219,7 +219,7 @@
 <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js')
+            navigator.serviceWorker.register('./sw.js')
                 .then(registration => {
                     console.log('PWA Service Worker registrado com sucesso!', registration.scope);
                 })
