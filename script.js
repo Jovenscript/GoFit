@@ -37,28 +37,33 @@ function fireConfetti() {
     }
 }
 
-const foodDatabase = [
-    { id: 1, name: "Arroz Branco Cozido", portion: "100g", kcal: 130, p: 2.5, c: 28, f: 0.2, tier: 'green' },
-    { id: 2, name: "Feijão Carioca", portion: "100g", kcal: 76, p: 4.8, c: 13.6, f: 0.5, tier: 'green' },
-    { id: 3, name: "Peito de Frango", portion: "100g", kcal: 165, p: 31, c: 0, f: 3.6, tier: 'green' },
-    { id: 4, name: "Ovo Cozido", portion: "1 unid (50g)", kcal: 77, p: 6.3, c: 0.6, f: 5.3, tier: 'green' },
-    { id: 5, name: "Whey Protein", portion: "30g", kcal: 120, p: 24, c: 3, f: 2, tier: 'green' },
-    { id: 6, name: "Banana", portion: "1 unid (100g)", kcal: 89, p: 1.1, c: 22.8, f: 0.3, tier: 'green' },
-    { id: 7, name: "Aveia em Flocos", portion: "30g", kcal: 114, p: 4.3, c: 17, f: 2.2, tier: 'green' },
-    { id: 15, name: "Brócolis Cozido", portion: "100g", kcal: 25, p: 2.1, c: 4.4, f: 0.5, tier: 'green' },
-    { id: 20, name: "Salmão Grelhado", portion: "100g", kcal: 206, p: 22, c: 0, f: 12, tier: 'green' },
-    { id: 21, name: "Macarrão Alho e Óleo", portion: "100g", kcal: 180, p: 5.5, c: 32, f: 4.5, tier: 'yellow' },
-    { id: 8, name: "Leite Integral", portion: "200ml", kcal: 120, p: 6, c: 10, f: 6, tier: 'yellow' },
-    { id: 9, name: "Pão Francês", portion: "1 unid (50g)", kcal: 150, p: 4.5, c: 29, f: 1.5, tier: 'yellow' },
-    { id: 12, name: "Carne Moída", portion: "100g", kcal: 133, p: 21, c: 0, f: 4.5, tier: 'yellow' },
-    { id: 13, name: "Batata Inglesa", portion: "100g", kcal: 52, p: 1.2, c: 11.9, f: 0.1, tier: 'yellow' },
-    { id: 17, name: "Pasta de Amendoim", portion: "15g", kcal: 94, p: 4.2, c: 2.6, f: 7.6, tier: 'yellow' },
-    { id: 19, name: "Iogurte Natural", portion: "170g", kcal: 107, p: 5.7, c: 7.8, f: 5.9, tier: 'yellow' },
-    { id: 22, name: "Refrigerante", portion: "350ml", kcal: 149, p: 0, c: 37, f: 0, tier: 'red' },
-    { id: 23, name: "Hambúrguer Gourmet", portion: "1 unid", kcal: 550, p: 28, c: 45, f: 32, tier: 'red' },
-    { id: 24, name: "Pizza de Calabresa", portion: "1 fatia", kcal: 280, p: 12, c: 30, f: 14, tier: 'red' },
-    { id: 25, name: "Batata Frita", portion: "100g", kcal: 312, p: 3.4, c: 41, f: 15, tier: 'red' }
-];
+// --- BANCO DE DADOS RELACIONAL (NOVO) ---
+const foodDB = {
+    bases: [
+        { id: 'pao_frances', name: "Pão Francês", measure: "unidade (50g)", defaultAmount: 1, kcal: 150, p: 4.5, c: 29, f: 1.5, allowPrep: false, tier: 'yellow' },
+        { id: 'ovo', name: "Ovo", measure: "unidade (50g)", defaultAmount: 1, kcal: 70, p: 6, c: 0.5, f: 5, allowPrep: true, tier: 'green' },
+        { id: 'frango', name: "Peito de Frango", measure: "porção (100g)", defaultAmount: 1, kcal: 110, p: 23, c: 0, f: 1.2, allowPrep: true, tier: 'green' },
+        { id: 'arroz_branco', name: "Arroz Branco", measure: "escumadeira (50g)", defaultAmount: 2, kcal: 65, p: 1.2, c: 14, f: 0.1, allowPrep: true, tier: 'green' },
+        { id: 'macarrao', name: "Macarrão", measure: "escumadeira (50g)", defaultAmount: 2, kcal: 80, p: 2.8, c: 16, f: 0.5, allowPrep: true, tier: 'yellow' },
+        { id: 'tapioca', name: "Goma de Tapioca", measure: "colher sopa (20g)", defaultAmount: 3, kcal: 48, p: 0, c: 12, f: 0, allowPrep: false, tier: 'yellow' }
+    ],
+    preps: [
+        { id: 'cozido', name: "Cozido/Simples", kcal: 0, p: 0, c: 0, f: 0 },
+        { id: 'grelhado', name: "Grelhado (fio de azeite)", kcal: 20, p: 0, c: 0, f: 2.2 },
+        { id: 'frito_oleo', name: "Frito (Óleo)", kcal: 45, p: 0, c: 0, f: 5 },
+        { id: 'mexido_manteiga', name: "Mexido (Manteiga)", kcal: 35, p: 0, c: 0, f: 4 },
+        { id: 'alho_oleo', name: "Alho e Óleo", kcal: 60, p: 0, c: 1, f: 6.5 }
+    ],
+    addons: [
+        { id: 'manteiga', name: "Manteiga", measure: "pontinha de faca (5g)", kcal: 36, p: 0, c: 0, f: 4, tier: 'yellow' },
+        { id: 'requeijao', name: "Requeijão Light", measure: "colher sopa (30g)", kcal: 54, p: 3, c: 1, f: 4.2, tier: 'yellow' },
+        { id: 'maionese', name: "Maionese", measure: "colher sopa (12g)", kcal: 40, p: 0, c: 1, f: 4, tier: 'red' },
+        { id: 'queijo_mussarela', name: "Queijo Mussarela", measure: "fatia (30g)", kcal: 96, p: 6.8, c: 0.9, f: 7.2, tier: 'yellow' },
+        { id: 'presunto', name: "Presunto Magro", measure: "fatia (15g)", kcal: 15, p: 2.5, c: 0.5, f: 0.5, tier: 'yellow' },
+        { id: 'mel', name: "Mel", measure: "colher chá (10g)", kcal: 30, p: 0, c: 8, f: 0, tier: 'yellow' },
+        { id: 'pate_frango', name: "Patê de Frango Caseiro", measure: "colher sopa (30g)", kcal: 45, p: 4, c: 1, f: 2.5, tier: 'green' }
+    ]
+};
 
 const mealNames = [
     { id: "cafe", name: "Café da Manhã", icon: "☕", time: "07:00" },
@@ -70,18 +75,25 @@ const mealNames = [
 ];
 
 const workoutsDB = {
-    A: { title: "Treino A - Peito e Tríceps", exercises: [{ name: "Supino Reto", sets: "4", reps: "8-12" }, { name: "Supino Inclinado", sets: "3", reps: "10-12" }, { name: "Crucifixo Máquina", sets: "3", reps: "12-15" }, { name: "Tríceps Pulley", sets: "4", reps: "12" }] },
+    A: { title: "Treino A - Peito e Tríceps", exercises: [{ name: "Supino Reto", sets: "4", reps: "8-12" }, { name: "Crucifixo Máquina", sets: "3", reps: "12-15" }, { name: "Tríceps Pulley", sets: "4", reps: "12" }] },
     B: { title: "Treino B - Costas e Bíceps", exercises: [{ name: "Puxada Frontal", sets: "4", reps: "10-12" }, { name: "Remada Curvada", sets: "4", reps: "8-12" }, { name: "Rosca Direta", sets: "4", reps: "10" }] },
     C: { title: "Treino C - Pernas", exercises: [{ name: "Agachamento Livre", sets: "4", reps: "8-12" }, { name: "Leg Press 45º", sets: "4", reps: "10-15" }, { name: "Cadeira Extensora", sets: "4", reps: "15" }] }
 };
 
-// --- ALTERADO O NOME DO CACHE PARA GOFIT ---
 let userData = JSON.parse(localStorage.getItem('goFitUserData')) || null;
 if (userData && !userData.macros) { userData = null; localStorage.removeItem('goFitUserData'); localStorage.removeItem('goFitDailyLog'); }
 
 let dailyLog = getDailyLog();
-let currentMealForModal = null;
 let currentWorkoutTab = 'A';
+
+// ESTADO DO CONSTRUTOR DE REFEIÇÃO
+let mealBuilder = {
+    mealId: null,
+    base: null,
+    amount: 1,
+    prepId: 'cozido',
+    addons: [] // array de objetos addons copiados e modificados por qtd
+};
 
 window.onload = () => {
     updateDynamicGreeting();
@@ -239,7 +251,6 @@ function addWater(amount) {
     dailyLog.waterConsumed += amount;
     saveState();
     const waterAfter = (dailyLog.waterConsumed / userData.waterGoal) * 100;
-    
     if (waterBefore < 100 && waterAfter >= 100) { triggerFeedback('success'); fireConfetti(); showToast("🎉 Meta de água batida!"); } 
     else { triggerFeedback('click'); showToast(`💧 +${amount}ml registrados!`); }
 }
@@ -283,15 +294,15 @@ function updateDashboardUI() {
         item.style.animationDelay = `${index * 0.05}s`;
         const mealAssoc = mealNames.find(m => m.id === food.mealId).name;
         item.innerHTML = `
-            <div class="log-info" style="display: flex; align-items: center; gap: 10px;">
-                <span class="tier-dot tier-${food.tier}"></span>
+            <div class="log-info" style="display: flex; align-items: flex-start; gap: 10px;">
+                <span class="tier-dot tier-${food.tier}" style="margin-top: 5px;"></span>
                 <div>
-                    <h4 style="margin: 0; font-size: 15px;">${food.name}</h4>
-                    <p style="font-size: 12px; color: var(--text-light); margin: 2px 0 0 0;">${mealAssoc}</p>
+                    <h4 style="margin: 0; font-size: 14px; line-height: 1.4;">${food.fullName}</h4>
+                    <p style="font-size: 11px; color: var(--text-light); margin: 2px 0 0 0;">${mealAssoc}</p>
                 </div>
             </div>
-            <div style="text-align: right;">
-                <b style="color:var(--primary-light); display:block; margin-bottom:6px;">${food.kcal} kcal</b>
+            <div style="text-align: right; flex-shrink: 0; margin-left: 10px;">
+                <b style="color:var(--primary-light); display:block; margin-bottom:6px;">${Math.round(food.kcal)} kcal</b>
                 <button class="btn-remove" onclick="removeFood(${index})">Remover</button>
             </div>
         `;
@@ -305,41 +316,47 @@ function renderMeals() {
     mealNames.forEach((meal, index) => {
         const mealFoods = dailyLog.foods.filter(f => f.mealId === meal.id);
         const mealKcal = mealFoods.reduce((acc, f) => acc + f.kcal, 0);
-        let foodsHtml = mealFoods.length > 0 ? `<p class="meal-card-details">${mealFoods.map(f => f.name).join(', ')}</p>` : `<p class="meal-card-details" style="color:rgba(255,255,255,0.3)">Nenhum alimento</p>`;
+        let foodsHtml = mealFoods.length > 0 ? `<p class="meal-card-details">${mealFoods.map(f => f.baseName).join(', ')}</p>` : `<p class="meal-card-details" style="color:rgba(255,255,255,0.3)">Nenhum alimento</p>`;
         const card = document.createElement('div');
         card.className = `carousel-item meal-card stagger-item spotlight-card`;
         card.style.animationDelay = `${index * 0.1}s`;
         card.innerHTML = `
-            <div style="display:flex; justify-content:space-between;"><span class="meal-time">${meal.time}</span><span style="font-size:14px; font-weight:800; color:var(--primary-light)">${mealKcal} kcal</span></div>
+            <div style="display:flex; justify-content:space-between;"><span class="meal-time">${meal.time}</span><span style="font-size:14px; font-weight:800; color:var(--primary-light)">${Math.round(mealKcal)} kcal</span></div>
             <h4>${meal.icon} ${meal.name}</h4> ${foodsHtml}
-            <button class="meal-card-btn" onclick="openFoodModal('${meal.id}', '${meal.name}')">+ Adicionar</button>
+            <button class="meal-card-btn" onclick="openFoodModal('${meal.id}', '${meal.name}')">+ Montar</button>
         `;
         carousel.appendChild(card);
     });
     initSpotlight();
 }
 
+// --- WIZARD CONSTRUTOR DE REFEIÇÕES ---
+
 function openFoodModal(mealId, mealName) {
     triggerFeedback('click');
-    currentMealForModal = mealId;
-    document.getElementById('modal-meal-name').innerText = mealName;
+    mealBuilder.mealId = mealId;
+    document.getElementById('modal-meal-name').innerText = `Base para o ${mealName}`;
     document.getElementById('food-modal').classList.remove('hidden');
+    document.getElementById('builder-step-1').classList.remove('hidden');
+    document.getElementById('builder-step-2').classList.add('hidden');
+    
     const dbList = document.getElementById('food-db-list');
     dbList.innerHTML = '';
-    foodDatabase.forEach((food, index) => {
+    
+    foodDB.bases.forEach((base, index) => {
         const div = document.createElement('div');
         div.className = 'food-db-item stagger-item';
         div.style.animationDelay = `${index * 0.05}s`;
-        div.onclick = () => addSelectedFood(food.id, food.name);
+        div.onclick = () => selectBaseFood(base);
         div.innerHTML = `
             <div style="display: flex; align-items: center; gap: 12px;">
-                 <span class="tier-dot tier-${food.tier}"></span>
+                 <span class="tier-dot tier-${base.tier}"></span>
                 <div>
-                    <span style="font-weight:800; font-size:15px; color:white; display:block; margin-bottom:4px;">${food.name}</span>
-                    <span style="font-size: 12px; color: var(--text-light);">${food.portion} • P:${food.p} C:${food.c} G:${food.f}</span>
+                    <span style="font-weight:800; font-size:15px; color:white; display:block; margin-bottom:4px;">${base.name}</span>
+                    <span style="font-size: 12px; color: var(--text-light);">${base.measure} • P:${base.p} C:${base.c} G:${base.f}</span>
                 </div>
             </div>
-            <span style="font-weight:800; font-size: 16px; color:var(--primary-light);">${food.kcal} kcal</span>
+            <span style="font-weight:800; font-size: 16px; color:var(--primary-light);">${base.kcal} kcal</span>
         `;
         dbList.appendChild(div);
     });
@@ -347,14 +364,180 @@ function openFoodModal(mealId, mealName) {
 
 function closeFoodModal() {
     document.getElementById('food-modal').classList.add('hidden');
-    currentMealForModal = null;
+    mealBuilder = { mealId: null, base: null, amount: 1, prepId: 'cozido', addons: [] };
 }
 
-function addSelectedFood(foodId, foodName) {
+function selectBaseFood(baseObj) {
     triggerFeedback('click');
-    const food = foodDatabase.find(f => f.id === foodId);
-    dailyLog.foods.push({ ...food, mealId: currentMealForModal });
-    saveState(); closeFoodModal(); showToast(`🍽️ ${foodName} adicionado!`);
+    mealBuilder.base = baseObj;
+    mealBuilder.amount = baseObj.defaultAmount;
+    mealBuilder.addons = [];
+    mealBuilder.prepId = 'cozido'; // reset
+    
+    document.getElementById('builder-step-1').classList.add('hidden');
+    document.getElementById('builder-step-2').classList.remove('hidden');
+    
+    document.getElementById('build-base-name').innerText = baseObj.name;
+    document.getElementById('build-base-measure').innerText = `Medida: ${baseObj.measure}`;
+    document.getElementById('build-base-qty').innerText = mealBuilder.amount;
+    
+    // Configura Modo de Preparo
+    const prepContainer = document.getElementById('prep-method-container');
+    const prepSelect = document.getElementById('build-prep-select');
+    if (baseObj.allowPrep) {
+        prepContainer.classList.remove('hidden');
+        prepSelect.innerHTML = '';
+        foodDB.preps.forEach(prep => {
+            prepSelect.innerHTML += `<option value="${prep.id}">${prep.name}</option>`;
+        });
+        mealBuilder.prepId = prepSelect.value;
+    } else {
+        prepContainer.classList.add('hidden');
+        mealBuilder.prepId = 'cozido'; 
+    }
+    
+    // Renderiza Complementos
+    const addonsList = document.getElementById('addons-list-container');
+    addonsList.innerHTML = '';
+    foodDB.addons.forEach(addon => {
+        const div = document.createElement('div');
+        div.className = 'addon-item';
+        div.innerHTML = `
+            <div style="display:flex; align-items:center;">
+                <input type="checkbox" class="addon-checkbox" id="chk-${addon.id}" onchange="toggleAddon('${addon.id}', this.checked)">
+                <label for="chk-${addon.id}" style="color:white; font-size:14px; font-weight:600; cursor:pointer;">
+                    ${addon.name} <br><small style="color:var(--text-light); font-weight:normal;">${addon.measure}</small>
+                </label>
+            </div>
+            <div class="qty-buttons" id="qty-box-${addon.id}" style="display:none;">
+                <button class="qty-btn" onclick="changeAddonQty('${addon.id}', -1)">-</button>
+                <span id="addon-qty-val-${addon.id}" style="color:white; font-weight:bold; min-width: 20px; text-align:center;">1</span>
+                <button class="qty-btn" onclick="changeAddonQty('${addon.id}', 1)">+</button>
+            </div>
+        `;
+        addonsList.appendChild(div);
+    });
+    
+    updateLivePreview();
+}
+
+function goBackToStep1() {
+    triggerFeedback('click');
+    document.getElementById('builder-step-2').classList.add('hidden');
+    document.getElementById('builder-step-1').classList.remove('hidden');
+}
+
+function changeBaseQty(delta) {
+    triggerFeedback('click');
+    if(mealBuilder.amount + delta > 0) {
+        mealBuilder.amount += delta;
+        document.getElementById('build-base-qty').innerText = mealBuilder.amount;
+        updateLivePreview();
+    }
+}
+
+function toggleAddon(addonId, isChecked) {
+    triggerFeedback('click');
+    const qtyBox = document.getElementById(`qty-box-${addonId}`);
+    if (isChecked) {
+        qtyBox.style.display = 'flex';
+        mealBuilder.addons.push({ id: addonId, amount: 1 });
+    } else {
+        qtyBox.style.display = 'none';
+        mealBuilder.addons = mealBuilder.addons.filter(a => a.id !== addonId);
+    }
+    updateLivePreview();
+}
+
+function changeAddonQty(addonId, delta) {
+    triggerFeedback('click');
+    let addon = mealBuilder.addons.find(a => a.id === addonId);
+    if (addon && addon.amount + delta > 0) {
+        addon.amount += delta;
+        document.getElementById(`addon-qty-val-${addonId}`).innerText = addon.amount;
+        updateLivePreview();
+    }
+}
+
+function calculateCurrentMacros() {
+    let total = { kcal: 0, p: 0, c: 0, f: 0 };
+    
+    // 1. Soma da Base
+    const base = mealBuilder.base;
+    const qty = mealBuilder.amount;
+    total.kcal += base.kcal * qty;
+    total.p += base.p * qty;
+    total.c += base.c * qty;
+    total.f += base.f * qty;
+    
+    // 2. Soma do Preparo (se aplicável, multiplicado pela quantidade da base)
+    if (base.allowPrep) {
+        const prepSelect = document.getElementById('build-prep-select');
+        mealBuilder.prepId = prepSelect ? prepSelect.value : 'cozido';
+        const prep = foodDB.preps.find(p => p.id === mealBuilder.prepId);
+        if (prep) {
+            total.kcal += prep.kcal * qty;
+            total.p += prep.p * qty;
+            total.c += prep.c * qty;
+            total.f += prep.f * qty;
+        }
+    }
+
+    // 3. Soma dos Complementos
+    mealBuilder.addons.forEach(a => {
+        const dbAddon = foodDB.addons.find(db => db.id === a.id);
+        total.kcal += dbAddon.kcal * a.amount;
+        total.p += dbAddon.p * a.amount;
+        total.c += dbAddon.c * a.amount;
+        total.f += dbAddon.f * a.amount;
+    });
+
+    return total;
+}
+
+function updateLivePreview() {
+    const macros = calculateCurrentMacros();
+    document.getElementById('live-kcal').innerText = Math.round(macros.kcal);
+    document.getElementById('live-prot').innerText = `${Math.round(macros.p)}g`;
+    document.getElementById('live-carb').innerText = `${Math.round(macros.c)}g`;
+    document.getElementById('live-fat').innerText = `${Math.round(macros.f)}g`;
+}
+
+function confirmMealAssembly() {
+    triggerFeedback('success');
+    const macros = calculateCurrentMacros();
+    
+    // Constrói o nome completo bonito para o log
+    let prepName = "";
+    if (mealBuilder.base.allowPrep && mealBuilder.prepId !== 'cozido') {
+        const pObj = foodDB.preps.find(p => p.id === mealBuilder.prepId);
+        prepName = pObj ? ` (${pObj.name})` : "";
+    }
+
+    let addonsText = "";
+    if (mealBuilder.addons.length > 0) {
+        let names = mealBuilder.addons.map(a => {
+            let dbA = foodDB.addons.find(db => db.id === a.id);
+            return `${a.amount > 1 ? a.amount+'x ' : ''}${dbA.name}`;
+        });
+        addonsText = " + " + names.join(', ');
+    }
+
+    const finalFoodObject = {
+        mealId: mealBuilder.mealId,
+        baseName: mealBuilder.base.name,
+        fullName: `${mealBuilder.amount}x ${mealBuilder.base.name}${prepName}${addonsText}`,
+        tier: mealBuilder.base.tier, // Mantém a cor do semáforo da base
+        kcal: macros.kcal,
+        p: macros.p,
+        c: macros.c,
+        f: macros.f
+    };
+
+    dailyLog.foods.push(finalFoodObject);
+    saveState();
+    closeFoodModal();
+    showToast("🍽️ Refeição montada e salva!");
 }
 
 function removeFood(index) {
@@ -362,6 +545,7 @@ function removeFood(index) {
     dailyLog.foods.splice(index, 1); saveState();
 }
 
+// --- TREINO ---
 function changeWorkout(tab, btnElement) {
     triggerFeedback('click'); currentWorkoutTab = tab;
     document.querySelectorAll('.btn-tab').forEach(btn => btn.classList.remove('active-tab'));
