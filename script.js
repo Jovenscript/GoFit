@@ -37,31 +37,80 @@ function fireConfetti() {
     }
 }
 
-// --- BANCO DE DADOS RELACIONAL (NOVO) ---
+// --- BANCO DE DADOS GIGANTE E CATEGORIZADO ---
 const foodDB = {
     bases: [
-        { id: 'pao_frances', name: "Pão Francês", measure: "unidade (50g)", defaultAmount: 1, kcal: 150, p: 4.5, c: 29, f: 1.5, allowPrep: false, tier: 'yellow' },
-        { id: 'ovo', name: "Ovo", measure: "unidade (50g)", defaultAmount: 1, kcal: 70, p: 6, c: 0.5, f: 5, allowPrep: true, tier: 'green' },
-        { id: 'frango', name: "Peito de Frango", measure: "porção (100g)", defaultAmount: 1, kcal: 110, p: 23, c: 0, f: 1.2, allowPrep: true, tier: 'green' },
-        { id: 'arroz_branco', name: "Arroz Branco", measure: "escumadeira (50g)", defaultAmount: 2, kcal: 65, p: 1.2, c: 14, f: 0.1, allowPrep: true, tier: 'green' },
-        { id: 'macarrao', name: "Macarrão", measure: "escumadeira (50g)", defaultAmount: 2, kcal: 80, p: 2.8, c: 16, f: 0.5, allowPrep: true, tier: 'yellow' },
-        { id: 'tapioca', name: "Goma de Tapioca", measure: "colher sopa (20g)", defaultAmount: 3, kcal: 48, p: 0, c: 12, f: 0, allowPrep: false, tier: 'yellow' }
+        // FRUTAS
+        { id: 'banana', name: "Banana Prata", measure: "unidade (100g)", defaultAmount: 1, kcal: 89, p: 1.1, c: 22.8, f: 0.3, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche_manha', 'lanche', 'pre_treino', 'pos_treino', 'ceia'] },
+        { id: 'maca', name: "Maçã", measure: "unidade (130g)", defaultAmount: 1, kcal: 68, p: 0.3, c: 18, f: 0.2, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche_manha', 'lanche', 'pre_treino', 'ceia'] },
+        { id: 'mamao', name: "Mamão Papaia", measure: "fatia (100g)", defaultAmount: 1, kcal: 43, p: 0.5, c: 10.8, f: 0.1, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche_manha'] },
+        { id: 'morango', name: "Morango", measure: "porção (100g)", defaultAmount: 1, kcal: 32, p: 0.7, c: 7.7, f: 0.3, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'ceia'] },
+        { id: 'abacate', name: "Abacate", measure: "colher sopa (30g)", defaultAmount: 2, kcal: 48, p: 0.4, c: 1.8, f: 4.6, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'ceia'] },
+
+        // PÃES E CARBOIDRATOS LEVES
+        { id: 'pao_frances', name: "Pão Francês", measure: "unidade (50g)", defaultAmount: 1, kcal: 150, p: 4.5, c: 29, f: 1.5, allowPrep: false, tier: 'yellow', meals: ['cafe', 'lanche_manha', 'lanche', 'pre_treino', 'pos_treino'] },
+        { id: 'pao_forma', name: "Pão de Forma Tradicional", measure: "fatia (25g)", defaultAmount: 2, kcal: 60, p: 2, c: 12, f: 0.5, allowPrep: false, tier: 'yellow', meals: ['cafe', 'lanche', 'pre_treino', 'pos_treino'] },
+        { id: 'pao_integral', name: "Pão de Forma Integral", measure: "fatia (25g)", defaultAmount: 2, kcal: 55, p: 2.5, c: 10, f: 0.5, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'pre_treino', 'pos_treino'] },
+        { id: 'tapioca', name: "Goma de Tapioca", measure: "colher sopa (20g)", defaultAmount: 3, kcal: 48, p: 0, c: 12, f: 0, allowPrep: false, tier: 'yellow', meals: ['cafe', 'lanche', 'pre_treino'] },
+        { id: 'aveia', name: "Aveia em Flocos", measure: "colher sopa (15g)", defaultAmount: 2, kcal: 57, p: 2.1, c: 8.5, f: 1.1, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'pre_treino', 'ceia'] },
+
+        // CARBOIDRATOS REFEIÇÕES
+        { id: 'arroz_branco', name: "Arroz Branco", measure: "escumadeira (50g)", defaultAmount: 2, kcal: 65, p: 1.2, c: 14, f: 0.1, allowPrep: true, tier: 'yellow', meals: ['almoco', 'jantar', 'pos_treino'] },
+        { id: 'arroz_integral', name: "Arroz Integral", measure: "escumadeira (50g)", defaultAmount: 2, kcal: 60, p: 1.5, c: 13, f: 0.5, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar'] },
+        { id: 'feijao', name: "Feijão Carioca/Preto", measure: "concha (60g)", defaultAmount: 1, kcal: 45, p: 3, c: 8, f: 0.3, allowPrep: false, tier: 'green', meals: ['almoco', 'jantar'] },
+        { id: 'macarrao', name: "Macarrão", measure: "escumadeira (50g)", defaultAmount: 2, kcal: 80, p: 2.8, c: 16, f: 0.5, allowPrep: true, tier: 'yellow', meals: ['almoco', 'jantar', 'pos_treino'] },
+        { id: 'batata_inglesa', name: "Batata Inglesa", measure: "unidade peq (100g)", defaultAmount: 1, kcal: 52, p: 1.2, c: 12, f: 0.1, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar'] },
+        { id: 'batata_doce', name: "Batata Doce", measure: "pedaço (100g)", defaultAmount: 1, kcal: 77, p: 0.6, c: 18.4, f: 0.1, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar', 'pre_treino', 'pos_treino'] },
+        
+        // CARNES E OVOS
+        { id: 'ovo', name: "Ovo Inteiro", measure: "unidade (50g)", defaultAmount: 1, kcal: 70, p: 6, c: 0.5, f: 5, allowPrep: true, tier: 'green', meals: ['cafe', 'lanche', 'almoco', 'jantar', 'ceia', 'pos_treino'] },
+        { id: 'frango', name: "Peito de Frango", measure: "filé (100g)", defaultAmount: 1, kcal: 110, p: 23, c: 0, f: 1.2, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar', 'pos_treino'] },
+        { id: 'patinho', name: "Carne Bovina (Patinho)", measure: "porção (100g)", defaultAmount: 1, kcal: 133, p: 21, c: 0, f: 4.5, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar', 'pos_treino'] },
+        { id: 'salmao', name: "Salmão", measure: "filé (100g)", defaultAmount: 1, kcal: 206, p: 22, c: 0, f: 12, allowPrep: true, tier: 'yellow', meals: ['almoco', 'jantar'] },
+        { id: 'peixe_branco', name: "Peixe Branco (Tilápia)", measure: "filé (100g)", defaultAmount: 1, kcal: 96, p: 20, c: 0, f: 1.7, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar', 'pos_treino'] },
+        { id: 'whey', name: "Whey Protein", measure: "scoop (30g)", defaultAmount: 1, kcal: 120, p: 24, c: 3, f: 2, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'pre_treino', 'pos_treino', 'ceia'] },
+
+        // LATICÍNIOS E BEBIDAS
+        { id: 'leite_integral', name: "Leite Integral", measure: "copo (200ml)", defaultAmount: 1, kcal: 120, p: 6, c: 10, f: 6, allowPrep: false, tier: 'yellow', meals: ['cafe', 'lanche', 'ceia'] },
+        { id: 'leite_desnatado', name: "Leite Desnatado", measure: "copo (200ml)", defaultAmount: 1, kcal: 70, p: 6, c: 10, f: 0, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'pre_treino', 'pos_treino', 'ceia'] },
+        { id: 'iogurte_natural', name: "Iogurte Natural", measure: "pote (170g)", defaultAmount: 1, kcal: 107, p: 5.7, c: 7.8, f: 5.9, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche_manha', 'lanche', 'ceia'] },
+        { id: 'cafe_puro', name: "Café (Sem Açúcar)", measure: "xícara (50ml)", defaultAmount: 1, kcal: 2, p: 0.1, c: 0.3, f: 0, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche_manha', 'lanche', 'pre_treino'] },
+        { id: 'suco_laranja', name: "Suco de Laranja (Natural)", measure: "copo (200ml)", defaultAmount: 1, kcal: 90, p: 1.4, c: 20, f: 0.4, allowPrep: false, tier: 'yellow', meals: ['cafe', 'almoco', 'lanche'] },
+
+        // INDUSTRIAIS / FAST FOOD
+        { id: 'refrigerante', name: "Refrigerante", measure: "lata (350ml)", defaultAmount: 1, kcal: 149, p: 0, c: 37, f: 0, allowPrep: false, tier: 'red', meals: ['almoco', 'jantar', 'lanche'] },
+        { id: 'pizza', name: "Pizza de Calabresa", measure: "fatia (100g)", defaultAmount: 2, kcal: 280, p: 12, c: 30, f: 14, allowPrep: false, tier: 'red', meals: ['jantar', 'lanche'] },
+        { id: 'hamburguer', name: "Hambúrguer Gourmet", measure: "unidade", defaultAmount: 1, kcal: 550, p: 28, c: 45, f: 32, allowPrep: false, tier: 'red', meals: ['jantar', 'almoco'] },
+        { id: 'batata_frita', name: "Batata Frita (Fast Food)", measure: "porção M (100g)", defaultAmount: 1, kcal: 312, p: 3.4, c: 41, f: 15, allowPrep: false, tier: 'red', meals: ['almoco', 'jantar', 'lanche'] }
     ],
     preps: [
         { id: 'cozido', name: "Cozido/Simples", kcal: 0, p: 0, c: 0, f: 0 },
         { id: 'grelhado', name: "Grelhado (fio de azeite)", kcal: 20, p: 0, c: 0, f: 2.2 },
-        { id: 'frito_oleo', name: "Frito (Óleo)", kcal: 45, p: 0, c: 0, f: 5 },
+        { id: 'assado', name: "Assado", kcal: 10, p: 0, c: 0, f: 1.1 },
+        { id: 'frito_oleo', name: "Frito em Óleo", kcal: 60, p: 0, c: 0, f: 6.5 },
+        { id: 'frito_azeite', name: "Frito no Azeite", kcal: 45, p: 0, c: 0, f: 5 },
         { id: 'mexido_manteiga', name: "Mexido (Manteiga)", kcal: 35, p: 0, c: 0, f: 4 },
-        { id: 'alho_oleo', name: "Alho e Óleo", kcal: 60, p: 0, c: 1, f: 6.5 }
+        { id: 'empanado', name: "Empanado e Frito", kcal: 120, p: 2, c: 15, f: 8 },
+        { id: 'alho_oleo', name: "Alho e Óleo", kcal: 70, p: 0.5, c: 2, f: 7 }
     ],
     addons: [
         { id: 'manteiga', name: "Manteiga", measure: "pontinha de faca (5g)", kcal: 36, p: 0, c: 0, f: 4, tier: 'yellow' },
-        { id: 'requeijao', name: "Requeijão Light", measure: "colher sopa (30g)", kcal: 54, p: 3, c: 1, f: 4.2, tier: 'yellow' },
+        { id: 'margarina', name: "Margarina", measure: "pontinha de faca (5g)", kcal: 36, p: 0, c: 0, f: 4, tier: 'red' },
+        { id: 'requeijao', name: "Requeijão Tradicional", measure: "colher sopa (30g)", kcal: 75, p: 3, c: 1, f: 6.5, tier: 'yellow' },
+        { id: 'requeijao_light', name: "Requeijão Light", measure: "colher sopa (30g)", kcal: 54, p: 3, c: 1, f: 4.2, tier: 'green' },
         { id: 'maionese', name: "Maionese", measure: "colher sopa (12g)", kcal: 40, p: 0, c: 1, f: 4, tier: 'red' },
+        { id: 'ketchup', name: "Ketchup", measure: "colher sopa (12g)", kcal: 14, p: 0, c: 3.5, f: 0, tier: 'yellow' },
         { id: 'queijo_mussarela', name: "Queijo Mussarela", measure: "fatia (30g)", kcal: 96, p: 6.8, c: 0.9, f: 7.2, tier: 'yellow' },
+        { id: 'queijo_prato', name: "Queijo Prato", measure: "fatia (30g)", kcal: 106, p: 7, c: 0.5, f: 8.5, tier: 'yellow' },
+        { id: 'queijo_branco', name: "Queijo Minas Frescal", measure: "fatia grossa (30g)", kcal: 72, p: 5, c: 1, f: 5.5, tier: 'green' },
         { id: 'presunto', name: "Presunto Magro", measure: "fatia (15g)", kcal: 15, p: 2.5, c: 0.5, f: 0.5, tier: 'yellow' },
+        { id: 'peito_peru', name: "Peito de Peru", measure: "fatia (15g)", kcal: 16, p: 3.5, c: 0, f: 0.2, tier: 'green' },
         { id: 'mel', name: "Mel", measure: "colher chá (10g)", kcal: 30, p: 0, c: 8, f: 0, tier: 'yellow' },
-        { id: 'pate_frango', name: "Patê de Frango Caseiro", measure: "colher sopa (30g)", kcal: 45, p: 4, c: 1, f: 2.5, tier: 'green' }
+        { id: 'pasta_amendoim', name: "Pasta de Amendoim", measure: "colher sopa (15g)", kcal: 94, p: 4.2, c: 2.6, f: 7.6, tier: 'green' },
+        { id: 'pate_frango', name: "Patê de Frango Caseiro", measure: "colher sopa (30g)", kcal: 45, p: 4, c: 1, f: 2.5, tier: 'green' },
+        { id: 'azeite', name: "Azeite de Oliva", measure: "colher sopa (13ml)", kcal: 119, p: 0, c: 0, f: 13.5, tier: 'green' },
+        { id: 'salada', name: "Salada Verde", measure: "porção", kcal: 15, p: 1, c: 3, f: 0, tier: 'green' },
+        { id: 'acucar', name: "Açúcar Refinado", measure: "colher chá (5g)", kcal: 20, p: 0, c: 5, f: 0, tier: 'red' }
     ]
 };
 
@@ -81,8 +130,6 @@ const workoutsDB = {
 };
 
 let userData = JSON.parse(localStorage.getItem('goFitUserData')) || null;
-if (userData && !userData.macros) { userData = null; localStorage.removeItem('goFitUserData'); localStorage.removeItem('goFitDailyLog'); }
-
 let dailyLog = getDailyLog();
 let currentWorkoutTab = 'A';
 
@@ -92,7 +139,7 @@ let mealBuilder = {
     base: null,
     amount: 1,
     prepId: 'cozido',
-    addons: [] // array de objetos addons copiados e modificados por qtd
+    addons: []
 };
 
 window.onload = () => {
@@ -107,7 +154,7 @@ function showToast(message) {
     document.getElementById('toast-message').innerText = message;
     toast.classList.remove('hidden');
     setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.classList.add('hidden'), 500); }, 3000);
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.classList.add('hidden'), 500); }, 4000);
 }
 
 function updateDynamicGreeting() {
@@ -335,31 +382,76 @@ function renderMeals() {
 function openFoodModal(mealId, mealName) {
     triggerFeedback('click');
     mealBuilder.mealId = mealId;
-    document.getElementById('modal-meal-name').innerText = `Base para o ${mealName}`;
+    document.getElementById('modal-meal-name').innerText = `Opções para o ${mealName}`;
+    document.getElementById('food-search').value = ""; // Limpar pesquisa
     document.getElementById('food-modal').classList.remove('hidden');
     document.getElementById('builder-step-1').classList.remove('hidden');
     document.getElementById('builder-step-2').classList.add('hidden');
     
+    renderFoodList("");
+}
+
+function filterFoods() {
+    const term = document.getElementById('food-search').value;
+    renderFoodList(term);
+}
+
+function renderFoodList(searchTerm) {
     const dbList = document.getElementById('food-db-list');
     dbList.innerHTML = '';
     
-    foodDB.bases.forEach((base, index) => {
-        const div = document.createElement('div');
-        div.className = 'food-db-item stagger-item';
-        div.style.animationDelay = `${index * 0.05}s`;
-        div.onclick = () => selectBaseFood(base);
-        div.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 12px;">
-                 <span class="tier-dot tier-${base.tier}"></span>
-                <div>
-                    <span style="font-weight:800; font-size:15px; color:white; display:block; margin-bottom:4px;">${base.name}</span>
-                    <span style="font-size: 12px; color: var(--text-light);">${base.measure} • P:${base.p} C:${base.c} G:${base.f}</span>
-                </div>
-            </div>
-            <span style="font-weight:800; font-size: 16px; color:var(--primary-light);">${base.kcal} kcal</span>
-        `;
-        dbList.appendChild(div);
+    const term = searchTerm.toLowerCase();
+    let recommended = [];
+    let others = [];
+    
+    // Filtro Contextual Inteligente
+    foodDB.bases.forEach(base => {
+        if(base.name.toLowerCase().includes(term)) {
+            if (base.meals.includes(mealBuilder.mealId)) {
+                recommended.push(base);
+            } else {
+                others.push(base);
+            }
+        }
     });
+    
+    // Gerar Bloco de Recomendados
+    if(recommended.length > 0) {
+        dbList.innerHTML += `<h4 class="gradient-text-sub" style="font-size:14px; margin-bottom:10px;">Sugestões Inteligentes</h4>`;
+        recommended.forEach((base, index) => {
+            dbList.appendChild(createFoodItemElement(base, index));
+        });
+    }
+    
+    // Gerar Bloco de Outros (Liberdade Total)
+    if(others.length > 0) {
+        dbList.innerHTML += `<h4 class="gradient-text-sub" style="font-size:14px; margin: 20px 0 10px 0;">Menu Completo</h4>`;
+        others.forEach((base, index) => {
+            dbList.appendChild(createFoodItemElement(base, index + recommended.length));
+        });
+    }
+    
+    if(recommended.length === 0 && others.length === 0) {
+        dbList.innerHTML = `<p style="color:var(--text-light); text-align:center; font-size:13px; padding:20px;">Nenhum alimento encontrado.</p>`;
+    }
+}
+
+function createFoodItemElement(base, delayIndex) {
+    const div = document.createElement('div');
+    div.className = 'food-db-item stagger-item';
+    div.style.animationDelay = `${delayIndex * 0.05}s`;
+    div.onclick = () => selectBaseFood(base);
+    div.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px;">
+             <span class="tier-dot tier-${base.tier}"></span>
+            <div>
+                <span style="font-weight:800; font-size:15px; color:white; display:block; margin-bottom:4px;">${base.name}</span>
+                <span style="font-size: 12px; color: var(--text-light);">${base.measure} • P:${base.p} C:${base.c} G:${base.f}</span>
+            </div>
+        </div>
+        <span style="font-weight:800; font-size: 16px; color:var(--primary-light);">${base.kcal} kcal</span>
+    `;
+    return div;
 }
 
 function closeFoodModal() {
@@ -406,7 +498,7 @@ function selectBaseFood(baseObj) {
             <div style="display:flex; align-items:center;">
                 <input type="checkbox" class="addon-checkbox" id="chk-${addon.id}" onchange="toggleAddon('${addon.id}', this.checked)">
                 <label for="chk-${addon.id}" style="color:white; font-size:14px; font-weight:600; cursor:pointer;">
-                    ${addon.name} <br><small style="color:var(--text-light); font-weight:normal;">${addon.measure}</small>
+                    <span class="tier-dot tier-${addon.tier}"></span>${addon.name} <br><small style="color:var(--text-light); font-weight:normal; margin-left: 20px;">${addon.measure}</small>
                 </label>
             </div>
             <div class="qty-buttons" id="qty-box-${addon.id}" style="display:none;">
@@ -462,7 +554,6 @@ function changeAddonQty(addonId, delta) {
 function calculateCurrentMacros() {
     let total = { kcal: 0, p: 0, c: 0, f: 0 };
     
-    // 1. Soma da Base
     const base = mealBuilder.base;
     const qty = mealBuilder.amount;
     total.kcal += base.kcal * qty;
@@ -470,7 +561,6 @@ function calculateCurrentMacros() {
     total.c += base.c * qty;
     total.f += base.f * qty;
     
-    // 2. Soma do Preparo (se aplicável, multiplicado pela quantidade da base)
     if (base.allowPrep) {
         const prepSelect = document.getElementById('build-prep-select');
         mealBuilder.prepId = prepSelect ? prepSelect.value : 'cozido';
@@ -483,7 +573,6 @@ function calculateCurrentMacros() {
         }
     }
 
-    // 3. Soma dos Complementos
     mealBuilder.addons.forEach(a => {
         const dbAddon = foodDB.addons.find(db => db.id === a.id);
         total.kcal += dbAddon.kcal * a.amount;
@@ -507,7 +596,6 @@ function confirmMealAssembly() {
     triggerFeedback('success');
     const macros = calculateCurrentMacros();
     
-    // Constrói o nome completo bonito para o log
     let prepName = "";
     if (mealBuilder.base.allowPrep && mealBuilder.prepId !== 'cozido') {
         const pObj = foodDB.preps.find(p => p.id === mealBuilder.prepId);
@@ -527,17 +615,35 @@ function confirmMealAssembly() {
         mealId: mealBuilder.mealId,
         baseName: mealBuilder.base.name,
         fullName: `${mealBuilder.amount}x ${mealBuilder.base.name}${prepName}${addonsText}`,
-        tier: mealBuilder.base.tier, // Mantém a cor do semáforo da base
+        tier: mealBuilder.base.tier, // A cor primária será a do alimento base
         kcal: macros.kcal,
         p: macros.p,
         c: macros.c,
         f: macros.f
     };
 
+    // SISTEMA DE CONTROLE (Alertas Inteligentes)
+    let currentKcal = 0;
+    let redCount = 0;
+    dailyLog.foods.forEach(f => {
+        currentKcal += f.kcal;
+        if(f.tier === 'red') redCount++;
+    });
+    
     dailyLog.foods.push(finalFoodObject);
     saveState();
     closeFoodModal();
-    showToast("🍽️ Refeição montada e salva!");
+
+    let newTotalKcal = currentKcal + macros.kcal;
+    if(newTotalKcal > userData.tdee * 1.1) {
+        // Alerta de excesso calórico
+        showToast("⚠️ Atenção: Você ultrapassou seu limite calórico diário!");
+    } else if(finalFoodObject.tier === 'red' && redCount >= 2) {
+        // Alerta de excesso de alimentos não saudáveis
+        showToast("⚠️ Alerta: Você está consumindo muitos itens ultraprocessados hoje.");
+    } else {
+        showToast("🍽️ Refeição montada e salva!");
+    }
 }
 
 function removeFood(index) {
