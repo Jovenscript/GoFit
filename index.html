@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#020617">
-    <title>Health App - Ultra Premium Edition</title>
+    <title>GoFit</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,10 +29,10 @@
     <div class="blob blob-4"></div>
 
     <div id="onboarding-view" class="section hidden">
-        <h1 class="fade-in-up gradient-text" id="welcome-text">Bem-vindo! 👋</h1>
+        <h1 class="fade-in-up gradient-text" id="welcome-text">Bem-vindo ao GoFit! 👋</h1>
         <p class="fade-in-up" style="margin-bottom: 30px; color: var(--text-light); text-align: center; animation-delay: 0.1s;">Vamos esculpir sua melhor versão.</p>
         
-        <div class="card glass-effect fade-in-up" style="animation-delay: 0.2s;">
+        <div class="card glass-effect fade-in-up spotlight-card" style="animation-delay: 0.2s;">
             <div class="form-group">
                 <label>Idade</label>
                 <input type="number" id="input-age" class="form-control" placeholder="Ex: 29">
@@ -57,13 +62,26 @@
             <div class="header-texts">
                 <h2 id="greeting-title" class="gradient-text">Olá!</h2>
                 <p id="ui-tdee" style="font-size: 14px; color: var(--text-light); font-weight: 500;">Meta: 0 kcal</p>
-                <div class="macro-badges">
-                    <span id="ui-prot" class="badge-soft glass-effect">P: 0g</span>
-                    <span id="ui-carb" class="badge-soft glass-effect">C: 0g</span>
-                    <span id="ui-fat" class="badge-soft glass-effect">G: 0g</span>
+                
+                <div class="macro-rings-container">
+                    <svg viewBox="0 0 120 120" class="macro-svg">
+                        <circle cx="60" cy="60" r="50" class="ring-bg"></circle>
+                        <circle cx="60" cy="60" r="50" class="ring-fg" id="ring-prot" stroke="var(--primary-accent)"></circle>
+                        
+                        <circle cx="60" cy="60" r="38" class="ring-bg"></circle>
+                        <circle cx="60" cy="60" r="38" class="ring-fg" id="ring-carb" stroke="var(--secondary-accent)"></circle>
+                        
+                        <circle cx="60" cy="60" r="26" class="ring-bg"></circle>
+                        <circle cx="60" cy="60" r="26" class="ring-fg" id="ring-fat" stroke="var(--tertiary-accent)"></circle>
+                    </svg>
+                    <div class="macro-legend">
+                        <span><b style="color: var(--primary-accent)">●</b> <span id="ui-prot">P: 0g</span></span>
+                        <span><b style="color: var(--secondary-accent)">●</b> <span id="ui-carb">C: 0g</span></span>
+                        <span><b style="color: var(--tertiary-accent)">●</b> <span id="ui-fat">G: 0g</span></span>
+                    </div>
                 </div>
             </div>
-            <div class="main-calories glass-effect hover-tilt">
+            <div class="main-calories glass-effect hover-tilt spotlight-card">
                 <span id="ui-calories" class="count-up breathing-text">0</span>
                 <small>kcal rest.</small>
             </div>
@@ -75,20 +93,19 @@
                 <span id="ui-water-status" class="status-badge glass-effect">0 / 0ml</span>
             </div>
             
-            <div class="water-dashboard glass-effect">
+            <div class="water-dashboard glass-effect spotlight-card">
                 <div class="water-ring-container">
-                    <svg class="progress-ring" width="120" height="120" style="filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));">
+                    <svg class="progress-ring" width="120" height="120" style="filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));">
                         <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.03)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
-                        <circle id="water-ring" class="progress-ring__circle" stroke="url(#gradient)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                        <circle id="water-ring" class="progress-ring__circle" stroke="url(#gradient-water)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
                         <defs>
-                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <linearGradient id="gradient-water" x1="0%" y1="0%" x2="100%" y2="100%">
                                 <stop offset="0%" stop-color="#60a5fa" />
-                                <stop offset="50%" stop-color="#a855f7" />
-                                <stop offset="100%" stop-color="#ec4899" />
+                                <stop offset="100%" stop-color="#3b82f6" />
                             </linearGradient>
                         </defs>
                     </svg>
-                    <div class="water-ring-text gradient-text" id="water-percent">0%</div>
+                    <div class="water-ring-text gradient-text" id="water-percent" style="background: linear-gradient(135deg, #93c5fd, #3b82f6); -webkit-background-clip: text; color: transparent;">0%</div>
                 </div>
                 
                 <div class="water-actions">
@@ -114,7 +131,7 @@
                 </div>
         </section>
 
-        <div class="card glass-effect fade-in-up" style="margin-top: 20px; animation-delay: 0.3s; margin-bottom: 40px;">
+        <div class="card glass-effect spotlight-card fade-in-up" style="margin-top: 20px; animation-delay: 0.3s; margin-bottom: 40px;">
             <h3 class="gradient-text-sub" style="margin-bottom: 20px;">Consumo Hoje</h3>
             <div id="food-log">
                 </div>
@@ -129,15 +146,49 @@
             <button class="btn btn-tab" onclick="changeWorkout('C', this)">C</button>
         </div>
         
-        <div class="card glass-effect fade-in-up" style="animation-delay: 0.2s;">
+        <div class="card glass-effect spotlight-card fade-in-up" style="animation-delay: 0.2s;">
             <h3 id="workout-title" class="gradient-text-sub">Treino A</h3>
             <div id="workout-list">
                 </div>
         </div>
     </div>
 
+    <div id="profile-view" class="section hidden">
+        <h2 class="fade-in-up gradient-text">Seu Perfil</h2>
+        
+        <div class="stats-grid fade-in-up" style="animation-delay: 0.1s;">
+            <div class="stat-card glass-effect spotlight-card">
+                <small>Metabolismo</small>
+                <b id="profile-bmr" style="color: var(--primary-light)">0 kcal</b>
+            </div>
+            <div class="stat-card glass-effect spotlight-card">
+                <small>Índice IMC</small>
+                <b id="profile-imc" style="color: var(--secondary-accent)">0</b>
+            </div>
+        </div>
+
+        <div class="card glass-effect spotlight-card fade-in-up" style="animation-delay: 0.2s;">
+            <h3 class="gradient-text-sub">Atualizar Dados</h3>
+            <div class="form-group">
+                <label>Peso Atual (kg)</label>
+                <input type="number" id="update-weight" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Novo Objetivo</label>
+                <select id="update-goal" class="form-control">
+                    <option value="emagrecer">Emagrecer (Déficit)</option>
+                    <option value="manter">Manter o Peso</option>
+                    <option value="ganhar">Ganhar Massa (Superávit)</option>
+                </select>
+            </div>
+            <button class="btn btn-primary breathing-glow" onclick="updateProfile()">Salvar e Recalcular</button>
+        </div>
+    </div>
+
     <div id="food-modal" class="modal hidden">
-        <div class="modal-content glass-effect">
+        <div class="modal-overlay" onclick="closeFoodModal()"></div>
+        <div class="modal-content glass-effect bottom-sheet">
+            <div class="drag-handle"></div>
             <div class="modal-header">
                 <h3 id="modal-meal-name" class="gradient-text-sub">Adicionar Alimento</h3>
                 <button class="close-btn glass-effect hover-scale" onclick="closeFoodModal()">✕</button>
@@ -156,10 +207,27 @@
             <div class="nav-icon icon-dumbbell"></div>
             <span>Treino</span>
         </div>
+        <div class="nav-item" onclick="switchTab('profile')">
+            <div class="nav-icon icon-profile"></div>
+            <span>Perfil</span>
+        </div>
     </div>
 
 </div>
 
 <script src="script.js"></script>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => {
+                    console.log('PWA Service Worker registrado com sucesso!', registration.scope);
+                })
+                .catch(err => {
+                    console.log('Falha ao registrar o Service Worker:', err);
+                });
+        });
+    }
+</script>
 </body>
 </html>
