@@ -6,7 +6,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#020617">
+    <meta name="theme-color" content="#050505">
     <title>GoFit</title>
     
     <link rel="manifest" href="./manifest.json">
@@ -16,252 +16,331 @@
 </head>
 <body>
 
-<div id="toast-notification" class="toast hidden glass-effect">
+<div id="toast-notification" class="toast hidden matte-glass">
     <span id="toast-message">Mensagem</span>
 </div>
 
 <div id="confetti-container"></div>
 
+<div class="aurora-bg">
+    <div class="aurora-blob aurora-1"></div>
+    <div class="aurora-blob aurora-2"></div>
+</div>
+
 <div id="app-container">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-    <div class="blob blob-4"></div>
 
     <div id="onboarding-view" class="section hidden">
-        <h1 class="fade-in-up gradient-text" id="welcome-text">Bem-vindo ao GoFit! 👋</h1>
-        <p class="fade-in-up" style="margin-bottom: 30px; color: var(--text-light); text-align: center; animation-delay: 0.1s;">Vamos esculpir sua melhor versão.</p>
+        <div class="onboarding-header fade-in-up">
+            <h1 class="premium-title">Bem-vindo ao GoFit.</h1>
+            <p class="premium-subtitle" style="margin-bottom: 40px;">Configure seu perfil para treinos e dieta.</p>
+        </div>
         
-        <div class="card glass-effect fade-in-up spotlight-card" style="animation-delay: 0.2s;">
+        <div class="card matte-glass fade-in-up spotlight-card" style="animation-delay: 0.2s;">
             <div class="form-group">
-                <label>Idade</label>
-                <input type="number" id="input-age" class="form-control" placeholder="Ex: 29">
+                <label>Como quer ser chamado?</label>
+                <input type="text" id="input-name" class="form-control" placeholder="Seu nome">
             </div>
+            
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Idade</label>
+                    <input type="number" id="input-age" class="form-control" placeholder="Ex: 29">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Altura (cm)</label>
+                    <input type="number" id="input-height" class="form-control" placeholder="Ex: 175">
+                </div>
+            </div>
+
             <div class="form-group">
-                <label>Peso (kg)</label>
+                <label>Peso Atual (kg)</label>
                 <input type="number" id="input-weight" class="form-control" placeholder="Ex: 75">
             </div>
+            
             <div class="form-group">
-                <label>Altura (cm)</label>
-                <input type="number" id="input-height" class="form-control" placeholder="Ex: 175">
-            </div>
-            <div class="form-group">
-                <label>Objetivo</label>
+                <label>Objetivo Principal</label>
                 <select id="input-goal" class="form-control">
-                    <option value="emagrecer">Emagrecer (Déficit)</option>
+                    <option value="emagrecer">Emagrecer (Déficit Calórico)</option>
                     <option value="manter">Manter o Peso</option>
                     <option value="ganhar">Ganhar Massa (Superávit)</option>
                 </select>
             </div>
-            <button class="btn btn-primary breathing-glow" onclick="saveProfile()">Gerar Minha Dieta</button>
+
+            <div class="form-group">
+                <label>Foco Muscular (Selecione até 2)</label>
+                <div class="focus-grid">
+                    <label class="focus-chip"><input type="checkbox" class="focus-cb" value="peito"> Peito</label>
+                    <label class="focus-chip"><input type="checkbox" class="focus-cb" value="costas"> Costas</label>
+                    <label class="focus-chip"><input type="checkbox" class="focus-cb" value="pernas"> Pernas</label>
+                    <label class="focus-chip"><input type="checkbox" class="focus-cb" value="bracos"> Braços</label>
+                    <label class="focus-chip"><input type="checkbox" class="focus-cb" value="core"> Abdômen</label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" style="margin-top: 10px;" onclick="saveProfile()">Inicializar Smart Dashboard</button>
         </div>
     </div>
 
     <div id="dashboard-view" class="section hidden">
+        
         <header class="dashboard-header fade-in-up">
-            <div class="header-texts">
-                <h2 id="greeting-title" class="gradient-text">Olá!</h2>
-                <p id="ui-tdee" style="font-size: 14px; color: var(--text-light); font-weight: 500;">Meta: 0 kcal</p>
-                
-                <div class="macro-rings-container">
-                    <svg viewBox="0 0 120 120" class="macro-svg">
-                        <circle cx="60" cy="60" r="50" class="ring-bg"></circle>
-                        <circle cx="60" cy="60" r="50" class="ring-fg" id="ring-prot" stroke="var(--primary-accent)"></circle>
-                        
-                        <circle cx="60" cy="60" r="38" class="ring-bg"></circle>
-                        <circle cx="60" cy="60" r="38" class="ring-fg" id="ring-carb" stroke="var(--secondary-accent)"></circle>
-                        
-                        <circle cx="60" cy="60" r="26" class="ring-bg"></circle>
-                        <circle cx="60" cy="60" r="26" class="ring-fg" id="ring-fat" stroke="var(--tertiary-accent)"></circle>
-                    </svg>
-                    <div class="macro-legend">
-                        <span><b style="color: var(--primary-accent)">●</b> <span id="ui-prot">P: 0g</span></span>
-                        <span><b style="color: var(--secondary-accent)">●</b> <span id="ui-carb">C: 0g</span></span>
-                        <span><b style="color: var(--tertiary-accent)">●</b> <span id="ui-fat">G: 0g</span></span>
-                    </div>
+            <div class="header-top-row">
+                <div class="profile-chip hover-scale" onclick="switchTab('profile')">
+                    <div class="avatar" id="ui-avatar">GF</div>
+                    <span id="ui-user-name">Perfil</span>
+                </div>
+                <div class="streak-chip matte-glass">
+                    <span>🔥 <b id="streak-count">1</b> Dias de Foco</span>
                 </div>
             </div>
-            <div class="main-calories glass-effect hover-tilt spotlight-card">
-                <span id="ui-calories" class="count-up breathing-text">0</span>
-                <small>kcal rest.</small>
+            
+            <div class="header-titles" style="margin-top: 25px;">
+                <h2 class="premium-title" id="dynamic-greeting-main">Bora manter o foco hoje!</h2>
+                <p id="ui-tdee" class="premium-subtitle">Meta diária: 0 kcal</p>
+            </div>
+
+            <div id="smart-insight-pill" class="insight-pill matte-glass fade-in-up" style="animation-delay: 0.1s;">
+                <span class="insight-icon" id="insight-icon">💡</span>
+                <span class="insight-text" id="smart-insight-text">Analisando suas métricas...</span>
             </div>
         </header>
 
-        <section class="app-section fade-in-up" style="animation-delay: 0.1s;">
-            <div class="section-header">
-                <h3 class="gradient-text-sub">Hidratação</h3>
-                <span id="ui-water-status" class="status-badge glass-effect">0 / 0ml</span>
-            </div>
-            
-            <div class="water-dashboard glass-effect spotlight-card">
-                <div class="water-ring-container">
-                    <svg class="progress-ring" width="120" height="120" style="filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));">
-                        <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.03)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
-                        <circle id="water-ring" class="progress-ring__circle" stroke="url(#gradient-water)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
-                        <defs>
-                            <linearGradient id="gradient-water" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#60a5fa" />
-                                <stop offset="100%" stop-color="#3b82f6" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                    <div class="water-ring-text gradient-text" id="water-percent" style="background: linear-gradient(135deg, #93c5fd, #3b82f6); -webkit-background-clip: text; color: transparent;">0%</div>
+        <div class="teloes-scroll fade-in-up" style="animation-delay: 0.2s;">
+            <div class="telao matte-glass magnetic-card glow-amber" style="flex: 0 0 280px;">
+                <div class="telao-header">
+                    <span>Balanço Energético</span>
+                    <div class="icon-indicator">⚡</div>
                 </div>
-                
-                <div class="water-actions">
-                    <div class="water-btn glass-effect hover-scale" onclick="addWater(200)">
-                        <div class="icon-wrapper">💧</div><small>200ml</small>
-                    </div>
-                    <div class="water-btn glass-effect hover-scale" onclick="addWater(350)">
-                        <div class="icon-wrapper">🥛</div><small>350ml</small>
-                    </div>
-                    <div class="water-btn glass-effect hover-scale" onclick="addWater(500)">
-                        <div class="icon-wrapper">🍼</div><small>500ml</small>
-                    </div>
+                <div class="telao-body">
+                    <h1 id="ui-calories" class="count-up">0</h1>
+                    <p class="telao-sub">kcal restantes</p>
+                </div>
+                <div class="telao-footer">
+                    <div class="progress-bar-bg"><div class="progress-fill shimmer" id="cal-progress"></div></div>
                 </div>
             </div>
-        </section>
 
-        <section class="app-section fade-in-up" style="animation-delay: 0.2s;">
-            <div class="section-header">
-                <h3 class="gradient-text-sub">Plano Alimentar</h3>
-                <span class="status-badge glass-effect">Dieta</span>
+            <div class="telao matte-glass magnetic-card" style="flex: 0 0 320px;">
+                <div class="telao-header" style="margin-bottom: 10px;">
+                    <span>Macronutrientes</span>
+                    <div class="icon-indicator">📊</div>
+                </div>
+                <div class="macro-bars-container">
+                    <div class="macro-bar-row">
+                        <div class="macro-bar-labels"><span class="macro-label">Proteína</span><span class="macro-value" id="txt-p">0g</span></div>
+                        <div class="progress-bar-bg"><div class="progress-fill shimmer" id="bar-prot"></div></div>
+                    </div>
+                    <div class="macro-bar-row">
+                        <div class="macro-bar-labels"><span class="macro-label">Carboidrato</span><span class="macro-value" id="txt-c">0g</span></div>
+                        <div class="progress-bar-bg"><div class="progress-fill shimmer" id="bar-carb"></div></div>
+                    </div>
+                    <div class="macro-bar-row">
+                        <div class="macro-bar-labels"><span class="macro-label">Gordura</span><span class="macro-value" id="txt-f">0g</span></div>
+                        <div class="progress-bar-bg"><div class="progress-fill shimmer" id="bar-fat"></div></div>
+                    </div>
+                </div>
             </div>
-            <div id="meals-carousel" class="carousel meals-carousel">
-                </div>
-        </section>
 
-        <div class="card glass-effect spotlight-card fade-in-up" style="margin-top: 20px; animation-delay: 0.3s; margin-bottom: 40px;">
-            <h3 class="gradient-text-sub" style="margin-bottom: 20px;">Consumo Hoje</h3>
-            <div id="food-log">
+            <div class="telao matte-glass magnetic-card glow-blue" style="flex: 0 0 280px;">
+                <div class="telao-header">
+                    <span>Hidratação</span>
+                    <div class="icon-indicator">💧</div>
                 </div>
+                <div class="telao-body horizontal-flex" style="justify-content: space-between; height: 100%; padding-bottom: 10px;">
+                    <div style="display: flex; flex-direction: column; justify-content: flex-end;">
+                        <h1 id="water-percent" style="color: var(--blue-water); font-size: 48px;">0%</h1>
+                        <p id="ui-water-status" class="telao-sub">0 / 0 ml</p>
+                    </div>
+                    <div style="display:flex; flex-direction: column; gap:10px; justify-content: flex-end;">
+                        <button class="btn-micro hover-scale" onclick="addWater(250)">+ 250ml</button>
+                        <button class="btn-micro hover-scale" onclick="addWater(500)">+ 500ml</button>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <section class="app-section fade-in-up" style="animation-delay: 0.3s; margin-top: 10px;">
+            <div class="timeline-header-block">
+                <h3>Planejamento Diário</h3>
+                <span class="subtitle-fade">Adicione suas refeições</span>
+            </div>
+            <div id="meals-carousel" class="carousel meals-carousel"></div>
+        </section>
+
+        <section class="app-section fade-in-up" style="animation-delay: 0.4s;">
+            <div class="timeline-header-block" style="margin-bottom: 25px;">
+                <h3>Timeline do Dia</h3>
+                <span class="subtitle-fade">Histórico de consumo</span>
+            </div>
+            <div class="timeline-vertical" id="food-log">
+                </div>
+        </section>
     </div>
 
     <div id="training-view" class="section hidden">
-        <h2 class="fade-in-up gradient-text">Seus Treinos</h2>
-        <div class="training-tabs fade-in-up glass-effect" style="animation-delay: 0.1s;">
-            <button class="btn btn-tab active-tab" onclick="changeWorkout('A', this)">A</button>
-            <button class="btn btn-tab" onclick="changeWorkout('B', this)">B</button>
-            <button class="btn btn-tab" onclick="changeWorkout('C', this)">C</button>
+        <div class="onboarding-header fade-in-up">
+            <p class="premium-subtitle">Smart Training</p>
+            <h2 class="premium-title">Seu Plano de Treino</h2>
         </div>
         
-        <div class="card glass-effect spotlight-card fade-in-up" style="animation-delay: 0.2s;">
-            <h3 id="workout-title" class="gradient-text-sub">Treino A</h3>
-            <div id="workout-list">
-                </div>
+        <div class="training-tabs fade-in-up matte-glass" style="animation-delay: 0.1s;">
+            <button class="btn-tab active-tab" onclick="changeWorkout('A', this)">Treino A</button>
+            <button class="btn-tab" onclick="changeWorkout('B', this)">Treino B</button>
+            <button class="btn-tab" onclick="changeWorkout('C', this)">Treino C</button>
         </div>
+        
+        <div class="workout-dashboard fade-in-up" style="animation-delay: 0.2s;">
+            <h3 id="workout-title" style="margin-bottom: 15px; font-weight: 600;">Treino A</h3>
+            
+            <div class="workout-stats matte-glass">
+                <div class="w-stat">
+                    <span class="w-stat-val" id="w-time">45</span>
+                    <span class="w-stat-label">Minutos</span>
+                </div>
+                <div class="w-stat">
+                    <span class="w-stat-val" id="w-ex-count">0</span>
+                    <span class="w-stat-label">Exercícios</span>
+                </div>
+                <div class="w-stat">
+                    <span class="w-stat-val" id="w-focus" style="color: var(--amber);">--</span>
+                    <span class="w-stat-label">Foco Principal</span>
+                </div>
+            </div>
+            
+            <div class="workout-progress-container matte-glass glow-slate">
+                <div class="w-progress-header">
+                    <span style="font-size:12px; font-weight:600; color: var(--text-light);">Progresso do Treino</span>
+                    <span id="w-progress-text" style="font-size:12px; color:var(--amber); font-weight: bold;">0%</span>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-fill bg-amber-default" id="w-progress-bar" style="width:0%;"></div></div>
+            </div>
+        </div>
+
+        <div id="workout-list" class="fade-in-up" style="animation-delay: 0.3s; display:flex; flex-direction:column; gap:15px; margin-top:20px;">
+            </div>
     </div>
 
     <div id="profile-view" class="section hidden">
-        <h2 class="fade-in-up gradient-text">Seu Perfil</h2>
+        <div class="onboarding-header fade-in-up">
+            <p class="premium-subtitle">Conta e Configurações</p>
+            <h2 class="premium-title">Visão Geral</h2>
+        </div>
         
         <div class="stats-grid fade-in-up" style="animation-delay: 0.1s;">
-            <div class="stat-card glass-effect spotlight-card">
-                <small>Metabolismo</small>
-                <b id="profile-bmr" style="color: var(--primary-light)">0 kcal</b>
+            <div class="stat-card matte-glass magnetic-card">
+                <small>Metabolismo Basal</small>
+                <b id="profile-bmr">0 kcal</b>
             </div>
-            <div class="stat-card glass-effect spotlight-card">
+            <div class="stat-card matte-glass magnetic-card">
                 <small>Índice IMC</small>
-                <b id="profile-imc" style="color: var(--secondary-accent)">0</b>
+                <b id="profile-imc" style="color: var(--amber-light);">0</b>
             </div>
         </div>
 
-        <div class="card glass-effect spotlight-card fade-in-up" style="animation-delay: 0.2s;">
-            <h3 class="gradient-text-sub">Atualizar Dados</h3>
+        <div class="card matte-glass fade-in-up" style="animation-delay: 0.2s;">
+            <h3 style="margin-bottom: 20px;">Atualizar Métricas</h3>
             <div class="form-group">
                 <label>Peso Atual (kg)</label>
                 <input type="number" id="update-weight" class="form-control">
             </div>
             <div class="form-group">
-                <label>Novo Objetivo</label>
+                <label>Objetivo Atual</label>
                 <select id="update-goal" class="form-control">
-                    <option value="emagrecer">Emagrecer (Déficit)</option>
+                    <option value="emagrecer">Emagrecer (Déficit Calórico)</option>
                     <option value="manter">Manter o Peso</option>
                     <option value="ganhar">Ganhar Massa (Superávit)</option>
                 </select>
             </div>
-            <button class="btn btn-primary breathing-glow" onclick="updateProfile()">Salvar e Recalcular</button>
+            <button class="btn btn-primary" onclick="updateProfile()">Salvar e Recalcular</button>
         </div>
     </div>
 
     <div id="food-modal" class="modal hidden">
         <div class="modal-overlay" onclick="closeFoodModal()"></div>
-        <div class="modal-content glass-effect bottom-sheet" id="modal-content-container">
+        <div class="modal-content matte-glass bottom-sheet" id="modal-content-container">
             <div class="drag-handle"></div>
             
-            <div id="builder-step-1" style="display: flex; flex-direction: column; height: 100%;">
-                <div class="modal-header">
-                    <h3 id="modal-meal-name" class="gradient-text-sub">Escolher Alimento</h3>
-                    <button class="close-btn glass-effect hover-scale" onclick="closeFoodModal()">✕</button>
-                </div>
-                
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <input type="text" id="food-search" class="form-control" placeholder="🔍 Buscar alimento ou bebida..." onkeyup="filterFoods()">
-                </div>
-
-                <div class="food-db-list" id="food-db-list" style="flex: 1; overflow-y: auto;">
-                    </div>
+            <div class="modal-header">
+                <h3 id="modal-meal-name" style="font-weight: 600;">Adicionar Refeição</h3>
+                <button class="btn-close hover-scale" onclick="closeFoodModal()">✕</button>
             </div>
 
-            <div id="builder-step-2" class="hidden">
-                <div class="modal-header">
-                    <button class="back-btn glass-effect hover-scale" onclick="goBackToStep1()">←</button>
-                    <h3 class="gradient-text-sub">Preparar e Montar</h3>
-                    <button class="close-btn glass-effect hover-scale" onclick="closeFoodModal()">✕</button>
+            <div class="modal-tabs">
+                <button class="modal-tab-btn active" onclick="switchModalTab('manual')">Banco de Dados</button>
+                <button class="modal-tab-btn" onclick="switchModalTab('text')">Smart Voice</button>
+                <button class="modal-tab-btn" onclick="switchModalTab('photo')">Smart Scanner</button>
+            </div>
+            
+            <div id="modal-tab-manual" class="modal-tab-content">
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <input type="text" id="food-search" class="form-control search-input" placeholder="Buscar alimento ou bebida..." onkeyup="filterFoods()">
+                </div>
+                <div class="food-db-list" id="food-db-list"></div>
+            </div>
+
+            <div id="modal-tab-text" class="modal-tab-content hidden">
+                <p class="telao-sub" style="margin-bottom: 15px;">Dite ou digite o que comeu. O sistema fará a interpretação automática dos itens e pesos.</p>
+                <div style="position: relative;">
+                    <textarea id="smart-text-input" class="form-control" rows="5" placeholder="Ex: 150g de arroz, feijão, 2 ovos e carne..."></textarea>
+                    <button class="btn-mic matte-glass hover-scale" onclick="startDictation()" title="Usar Microfone">🎙️</button>
+                </div>
+                <button class="btn btn-primary" style="margin-top: 20px;" onclick="processSmartText()">Processar Entrada</button>
+            </div>
+
+            <div id="modal-tab-photo" class="modal-tab-content hidden" style="align-items: center;">
+                <p class="telao-sub" style="margin-bottom: 20px; text-align: center;">Tire uma foto do prato. Nosso Motor Visual offline analisará as cores e proporções sem uso de APIs externas.</p>
+                
+                <div class="camera-area matte-glass glow-slate" id="camera-area" onclick="document.getElementById('camera-input').click()">
+                    <div class="icon-camera">📷</div>
+                    <p style="margin-top: 15px; font-weight: 500; font-size: 14px; color: var(--text-main);">Toque para Câmera / Galeria</p>
+                </div>
+                <input type="file" id="camera-input" accept="image/*" capture="environment" style="display: none;" onchange="startLocalImageScan(this)">
+                
+                <div id="scanner-box" class="hidden matte-glass" style="position: relative; width: 100%; height: 200px; border-radius: 20px; overflow: hidden; margin-top: 15px;">
+                    <div class="scanner-line"></div>
+                    <p class="scanner-text breathing-text">Analisando Pixels...</p>
+                </div>
+            </div>
+
+            <div id="builder-step-2" class="modal-tab-content hidden" style="height: 100%;">
+                <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <button class="btn-close hover-scale" onclick="goBackToStep1()" style="margin-right: 15px; width: 36px; height:36px;">←</button>
+                    <h3 style="margin:0; font-weight: 600;">Revisar Identificações</h3>
                 </div>
                 
-                <div class="builder-scroll-area">
-                    <div class="card glass-effect" style="margin-bottom: 15px; padding: 15px;">
-                        <h4 id="build-base-name" style="color:white; margin-bottom: 10px;">Alimento</h4>
-                        
-                        <div class="qty-control-wrapper">
-                            <span style="color:var(--text-light); font-size:13px;" id="build-base-measure">Quantidade</span>
-                            <div class="qty-buttons">
-                                <button class="qty-btn" onclick="changeBaseQty(-1)">-</button>
-                                <span id="build-base-qty" style="color:white; font-weight:bold; min-width: 25px; text-align:center;">1</span>
-                                <button class="qty-btn" onclick="changeBaseQty(1)">+</button>
-                            </div>
-                        </div>
-                        
-                        <div id="prep-method-container" class="hidden" style="margin-top: 15px;">
-                            <label style="font-size:12px; color:var(--text-light); display:block; margin-bottom:5px;">Modo de Preparo</label>
-                            <select id="build-prep-select" class="form-control" style="padding:10px; font-size: 14px;" onchange="updateLivePreview()">
-                            </select>
-                        </div>
-                    </div>
+                <p id="ai-context-msg" style="font-size: 11px; color: var(--green-health); margin-bottom: 10px; text-align: center;"></p>
+                
+                <div class="builder-scroll-area" id="smart-review-list"></div>
 
-                    <h4 class="gradient-text-sub" style="font-size: 15px; margin: 20px 0 10px 0;">Adicionar Complementos</h4>
-                    <div id="addons-list-container" style="display: flex; flex-direction: column; gap: 10px;">
-                        </div>
-                </div>
-
-                <div class="live-preview-footer glass-effect">
+                <div class="live-preview-footer matte-glass">
                     <div class="live-macros">
-                        <div class="live-macro-item"><small>KCAL</small><br><b id="live-kcal" style="color:var(--primary-light)">0</b></div>
+                        <div class="live-macro-item"><small>KCAL</small><br><b id="live-kcal">0</b></div>
                         <div class="live-macro-item"><small>PROT</small><br><b id="live-prot">0g</b></div>
                         <div class="live-macro-item"><small>CARB</small><br><b id="live-carb">0g</b></div>
                         <div class="live-macro-item"><small>GORD</small><br><b id="live-fat">0g</b></div>
                     </div>
-                    <button class="btn btn-primary" style="padding: 12px; font-size:15px; margin-top: 10px;" onclick="confirmMealAssembly()">Adicionar ao Diário</button>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button class="btn btn-discard hover-scale" onclick="discardSmartAssembly()">Descartar</button>
+                        <button class="btn btn-primary hover-scale" style="flex: 2;" onclick="confirmSmartAssembly()">Confirmar e Salvar</button>
+                    </div>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <div id="bottom-nav-bar" class="bottom-nav glass-effect hidden">
+    <div id="bottom-nav-bar" class="bottom-nav matte-glass hidden">
         <div class="nav-item active" onclick="switchTab('dashboard')">
             <div class="nav-icon icon-home"></div>
-            <span>Home</span>
+            <span>Dashboard</span>
         </div>
         <div class="nav-item" onclick="switchTab('training')">
             <div class="nav-icon icon-dumbbell"></div>
-            <span>Treino</span>
+            <span>Treinos</span>
         </div>
         <div class="nav-item" onclick="switchTab('profile')">
             <div class="nav-icon icon-profile"></div>
-            <span>Perfil</span>
+            <span>Conta</span>
         </div>
     </div>
 
