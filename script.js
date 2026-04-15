@@ -24,7 +24,7 @@ function triggerFeedback(type = 'click') {
 
 function fireConfetti() {
     const container = document.getElementById('confetti-container');
-    const colors = ['#a855f7', '#3b82f6', '#10b981', '#f59e0b', '#ec4899'];
+    const colors = ['#d97706', '#fbbf24', '#64748b', '#a3a3a3', '#ffffff'];
     for (let i = 0; i < 60; i++) {
         const conf = document.createElement('div');
         conf.className = 'confetti-piece';
@@ -37,80 +37,116 @@ function fireConfetti() {
     }
 }
 
-// --- BANCO DE DADOS GIGANTE E CATEGORIZADO ---
+function initMagneticCards() {
+    const cards = document.querySelectorAll('.magnetic-card');
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--x', `${x}px`);
+            card.style.setProperty('--y', `${y}px`);
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -5; 
+            const rotateY = ((x - centerX) / centerX) * 5;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+        });
+    });
+}
+
+document.querySelectorAll('.focus-cb').forEach(cb => {
+    cb.addEventListener('change', function() {
+        const checked = document.querySelectorAll('.focus-cb:checked');
+        if (checked.length > 2) {
+            this.checked = false;
+            showToast("⚠️ Selecione no máximo 2 focos.");
+            return;
+        }
+        this.parentElement.classList.toggle('selected', this.checked);
+    });
+});
+
 const foodDB = {
     bases: [
-        // FRUTAS
-        { id: 'banana', name: "Banana Prata", measure: "unidade (100g)", defaultAmount: 1, kcal: 89, p: 1.1, c: 22.8, f: 0.3, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche_manha', 'lanche', 'pre_treino', 'pos_treino', 'ceia'] },
-        { id: 'maca', name: "Maçã", measure: "unidade (130g)", defaultAmount: 1, kcal: 68, p: 0.3, c: 18, f: 0.2, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche_manha', 'lanche', 'pre_treino', 'ceia'] },
-        { id: 'mamao', name: "Mamão Papaia", measure: "fatia (100g)", defaultAmount: 1, kcal: 43, p: 0.5, c: 10.8, f: 0.1, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche_manha'] },
-        { id: 'morango', name: "Morango", measure: "porção (100g)", defaultAmount: 1, kcal: 32, p: 0.7, c: 7.7, f: 0.3, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'ceia'] },
-        { id: 'abacate', name: "Abacate", measure: "colher sopa (30g)", defaultAmount: 2, kcal: 48, p: 0.4, c: 1.8, f: 4.6, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'ceia'] },
-
-        // PÃES E CARBOIDRATOS LEVES
-        { id: 'pao_frances', name: "Pão Francês", measure: "unidade (50g)", defaultAmount: 1, kcal: 150, p: 4.5, c: 29, f: 1.5, allowPrep: false, tier: 'yellow', meals: ['cafe', 'lanche_manha', 'lanche', 'pre_treino', 'pos_treino'] },
-        { id: 'pao_forma', name: "Pão de Forma Tradicional", measure: "fatia (25g)", defaultAmount: 2, kcal: 60, p: 2, c: 12, f: 0.5, allowPrep: false, tier: 'yellow', meals: ['cafe', 'lanche', 'pre_treino', 'pos_treino'] },
-        { id: 'pao_integral', name: "Pão de Forma Integral", measure: "fatia (25g)", defaultAmount: 2, kcal: 55, p: 2.5, c: 10, f: 0.5, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'pre_treino', 'pos_treino'] },
-        { id: 'tapioca', name: "Goma de Tapioca", measure: "colher sopa (20g)", defaultAmount: 3, kcal: 48, p: 0, c: 12, f: 0, allowPrep: false, tier: 'yellow', meals: ['cafe', 'lanche', 'pre_treino'] },
-        { id: 'aveia', name: "Aveia em Flocos", measure: "colher sopa (15g)", defaultAmount: 2, kcal: 57, p: 2.1, c: 8.5, f: 1.1, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'pre_treino', 'ceia'] },
-
-        // CARBOIDRATOS REFEIÇÕES
-        { id: 'arroz_branco', name: "Arroz Branco", measure: "escumadeira (50g)", defaultAmount: 2, kcal: 65, p: 1.2, c: 14, f: 0.1, allowPrep: true, tier: 'yellow', meals: ['almoco', 'jantar', 'pos_treino'] },
-        { id: 'arroz_integral', name: "Arroz Integral", measure: "escumadeira (50g)", defaultAmount: 2, kcal: 60, p: 1.5, c: 13, f: 0.5, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar'] },
-        { id: 'feijao', name: "Feijão Carioca/Preto", measure: "concha (60g)", defaultAmount: 1, kcal: 45, p: 3, c: 8, f: 0.3, allowPrep: false, tier: 'green', meals: ['almoco', 'jantar'] },
-        { id: 'macarrao', name: "Macarrão", measure: "escumadeira (50g)", defaultAmount: 2, kcal: 80, p: 2.8, c: 16, f: 0.5, allowPrep: true, tier: 'yellow', meals: ['almoco', 'jantar', 'pos_treino'] },
-        { id: 'batata_inglesa', name: "Batata Inglesa", measure: "unidade peq (100g)", defaultAmount: 1, kcal: 52, p: 1.2, c: 12, f: 0.1, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar'] },
-        { id: 'batata_doce', name: "Batata Doce", measure: "pedaço (100g)", defaultAmount: 1, kcal: 77, p: 0.6, c: 18.4, f: 0.1, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar', 'pre_treino', 'pos_treino'] },
-        
-        // CARNES E OVOS
-        { id: 'ovo', name: "Ovo Inteiro", measure: "unidade (50g)", defaultAmount: 1, kcal: 70, p: 6, c: 0.5, f: 5, allowPrep: true, tier: 'green', meals: ['cafe', 'lanche', 'almoco', 'jantar', 'ceia', 'pos_treino'] },
-        { id: 'frango', name: "Peito de Frango", measure: "filé (100g)", defaultAmount: 1, kcal: 110, p: 23, c: 0, f: 1.2, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar', 'pos_treino'] },
-        { id: 'patinho', name: "Carne Bovina (Patinho)", measure: "porção (100g)", defaultAmount: 1, kcal: 133, p: 21, c: 0, f: 4.5, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar', 'pos_treino'] },
-        { id: 'salmao', name: "Salmão", measure: "filé (100g)", defaultAmount: 1, kcal: 206, p: 22, c: 0, f: 12, allowPrep: true, tier: 'yellow', meals: ['almoco', 'jantar'] },
-        { id: 'peixe_branco', name: "Peixe Branco (Tilápia)", measure: "filé (100g)", defaultAmount: 1, kcal: 96, p: 20, c: 0, f: 1.7, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar', 'pos_treino'] },
-        { id: 'whey', name: "Whey Protein", measure: "scoop (30g)", defaultAmount: 1, kcal: 120, p: 24, c: 3, f: 2, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'pre_treino', 'pos_treino', 'ceia'] },
-
-        // LATICÍNIOS E BEBIDAS
-        { id: 'leite_integral', name: "Leite Integral", measure: "copo (200ml)", defaultAmount: 1, kcal: 120, p: 6, c: 10, f: 6, allowPrep: false, tier: 'yellow', meals: ['cafe', 'lanche', 'ceia'] },
-        { id: 'leite_desnatado', name: "Leite Desnatado", measure: "copo (200ml)", defaultAmount: 1, kcal: 70, p: 6, c: 10, f: 0, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'pre_treino', 'pos_treino', 'ceia'] },
-        { id: 'iogurte_natural', name: "Iogurte Natural", measure: "pote (170g)", defaultAmount: 1, kcal: 107, p: 5.7, c: 7.8, f: 5.9, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche_manha', 'lanche', 'ceia'] },
-        { id: 'cafe_puro', name: "Café (Sem Açúcar)", measure: "xícara (50ml)", defaultAmount: 1, kcal: 2, p: 0.1, c: 0.3, f: 0, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche_manha', 'lanche', 'pre_treino'] },
-        { id: 'suco_laranja', name: "Suco de Laranja (Natural)", measure: "copo (200ml)", defaultAmount: 1, kcal: 90, p: 1.4, c: 20, f: 0.4, allowPrep: false, tier: 'yellow', meals: ['cafe', 'almoco', 'lanche'] },
-
-        // INDUSTRIAIS / FAST FOOD
-        { id: 'refrigerante', name: "Refrigerante", measure: "lata (350ml)", defaultAmount: 1, kcal: 149, p: 0, c: 37, f: 0, allowPrep: false, tier: 'red', meals: ['almoco', 'jantar', 'lanche'] },
-        { id: 'pizza', name: "Pizza de Calabresa", measure: "fatia (100g)", defaultAmount: 2, kcal: 280, p: 12, c: 30, f: 14, allowPrep: false, tier: 'red', meals: ['jantar', 'lanche'] },
-        { id: 'hamburguer', name: "Hambúrguer Gourmet", measure: "unidade", defaultAmount: 1, kcal: 550, p: 28, c: 45, f: 32, allowPrep: false, tier: 'red', meals: ['jantar', 'almoco'] },
-        { id: 'batata_frita', name: "Batata Frita (Fast Food)", measure: "porção M (100g)", defaultAmount: 1, kcal: 312, p: 3.4, c: 41, f: 15, allowPrep: false, tier: 'red', meals: ['almoco', 'jantar', 'lanche'] }
+        { id: 'banana', name: "Banana Prata", keywords: ['banana', 'nanica', 'prata', 'da terra'], category: 'fruta', measure: "unidade (100g)", defaultAmount: 1, kcal: 89, p: 1.1, c: 22.8, f: 0.3, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche_manha', 'lanche', 'pre_treino', 'pos_treino', 'ceia'] },
+        { id: 'maca', name: "Maçã", keywords: ['maçã', 'maca'], category: 'fruta', measure: "unidade (130g)", defaultAmount: 1, kcal: 68, p: 0.3, c: 18, f: 0.2, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche_manha', 'lanche', 'pre_treino', 'ceia'] },
+        { id: 'pao_frances', name: "Pão Francês", keywords: ['pão francês', 'pao frances', 'cacetinho', 'pão de sal'], category: 'carb_simples', measure: "unidade (50g)", defaultAmount: 1, kcal: 150, p: 4.5, c: 29, f: 1.5, allowPrep: false, tier: 'yellow', meals: ['cafe', 'lanche_manha', 'lanche', 'pre_treino', 'pos_treino'] },
+        { id: 'pao_forma', name: "Pão de Forma", keywords: ['pão de forma', 'pao de forma', 'pão de sanduíche'], category: 'carb_simples', measure: "fatia (25g)", defaultAmount: 2, kcal: 60, p: 2, c: 12, f: 0.5, allowPrep: false, tier: 'yellow', meals: ['cafe', 'lanche', 'pre_treino', 'pos_treino'] },
+        { id: 'pao_integral', name: "Pão Integral", keywords: ['pão integral', 'pao integral'], category: 'carb_complexo', measure: "fatia (25g)", defaultAmount: 2, kcal: 55, p: 2.5, c: 10, f: 0.5, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'pre_treino', 'pos_treino'] },
+        { id: 'tapioca', name: "Tapioca", keywords: ['tapioca', 'goma'], category: 'carb_simples', measure: "colher sopa (20g)", defaultAmount: 3, kcal: 48, p: 0, c: 12, f: 0, allowPrep: false, tier: 'yellow', meals: ['cafe', 'lanche', 'pre_treino'] },
+        { id: 'aveia', name: "Aveia em Flocos", keywords: ['aveia', 'flocos de aveia'], category: 'carb_complexo', measure: "colher sopa (15g)", defaultAmount: 2, kcal: 57, p: 2.1, c: 8.5, f: 1.1, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'pre_treino', 'ceia'] },
+        { id: 'arroz_branco', name: "Arroz Branco", keywords: ['arroz', 'arroz branco'], category: 'prato_principal', measure: "escumadeira (50g)", defaultAmount: 2, kcal: 65, p: 1.2, c: 14, f: 0.1, allowPrep: true, tier: 'yellow', meals: ['almoco', 'jantar', 'pos_treino'] },
+        { id: 'arroz_integral', name: "Arroz Integral", keywords: ['arroz integral'], category: 'prato_principal', measure: "escumadeira (50g)", defaultAmount: 2, kcal: 60, p: 1.5, c: 13, f: 0.5, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar'] },
+        { id: 'feijao', name: "Feijão", keywords: ['feijão', 'feijao', 'feijão carioca', 'feijão preto'], category: 'prato_principal', measure: "concha (60g)", defaultAmount: 1, kcal: 45, p: 3, c: 8, f: 0.3, allowPrep: false, tier: 'green', meals: ['almoco', 'jantar'] },
+        { id: 'macarrao', name: "Macarrão", keywords: ['macarrão', 'macarrao', 'massa', 'espaguete'], category: 'prato_principal', measure: "escumadeira (50g)", defaultAmount: 2, kcal: 80, p: 2.8, c: 16, f: 0.5, allowPrep: true, tier: 'yellow', meals: ['almoco', 'jantar', 'pos_treino'] },
+        { id: 'batata_inglesa', name: "Batata Inglesa", keywords: ['batata', 'batata inglesa'], category: 'prato_principal', measure: "unidade peq (100g)", defaultAmount: 1, kcal: 52, p: 1.2, c: 12, f: 0.1, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar'] },
+        { id: 'batata_doce', name: "Batata Doce", keywords: ['batata doce'], category: 'prato_principal', measure: "pedaço (100g)", defaultAmount: 1, kcal: 77, p: 0.6, c: 18.4, f: 0.1, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar', 'pre_treino', 'pos_treino'] },
+        { id: 'ovo', name: "Ovo Inteiro", keywords: ['ovo', 'ovos'], category: 'proteina', measure: "unidade (50g)", defaultAmount: 1, kcal: 70, p: 6, c: 0.5, f: 5, allowPrep: true, tier: 'green', meals: ['cafe', 'lanche', 'almoco', 'jantar', 'ceia', 'pos_treino'] },
+        { id: 'frango', name: "Peito de Frango", keywords: ['frango', 'peito de frango', 'filé de frango'], category: 'prato_principal', measure: "filé (100g)", defaultAmount: 1, kcal: 110, p: 23, c: 0, f: 1.2, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar', 'pos_treino'] },
+        { id: 'patinho', name: "Carne Bovina (Patinho)", keywords: ['carne', 'patinho', 'bife', 'carne moída', 'carne bovina'], category: 'prato_principal', measure: "porção (100g)", defaultAmount: 1, kcal: 133, p: 21, c: 0, f: 4.5, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar', 'pos_treino'] },
+        { id: 'almondega', name: "Almôndega", keywords: ['almôndega', 'almondega', 'almôndegas'], category: 'prato_principal', measure: "unidade (30g)", defaultAmount: 3, kcal: 60, p: 5, c: 2, f: 3.5, allowPrep: true, tier: 'yellow', meals: ['almoco', 'jantar'] },
+        { id: 'salmao', name: "Salmão", keywords: ['salmão', 'salmao'], category: 'prato_principal', measure: "filé (100g)", defaultAmount: 1, kcal: 206, p: 22, c: 0, f: 12, allowPrep: true, tier: 'yellow', meals: ['almoco', 'jantar'] },
+        { id: 'peixe_branco', name: "Peixe Branco", keywords: ['peixe', 'tilápia', 'peixe branco', 'merluza'], category: 'prato_principal', measure: "filé (100g)", defaultAmount: 1, kcal: 96, p: 20, c: 0, f: 1.7, allowPrep: true, tier: 'green', meals: ['almoco', 'jantar', 'pos_treino'] },
+        { id: 'salada', name: "Salada Verde", keywords: ['salada', 'alface', 'tomate', 'folhas'], category: 'salada', measure: "porção", defaultAmount: 1, kcal: 15, p: 1, c: 3, f: 0, allowPrep: false, tier: 'green', meals: ['almoco', 'jantar'] },
+        { id: 'whey', name: "Whey Protein", keywords: ['whey', 'whey protein', 'proteína em pó'], category: 'suplemento', measure: "scoop (30g)", defaultAmount: 1, kcal: 120, p: 24, c: 3, f: 2, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'pre_treino', 'pos_treino', 'ceia'] },
+        { id: 'leite_integral', name: "Leite Integral", keywords: ['leite', 'leite integral'], category: 'bebida', measure: "copo (200ml)", defaultAmount: 1, kcal: 120, p: 6, c: 10, f: 6, allowPrep: false, tier: 'yellow', meals: ['cafe', 'lanche', 'ceia'] },
+        { id: 'leite_desnatado', name: "Leite Desnatado", keywords: ['leite desnatado'], category: 'bebida', measure: "copo (200ml)", defaultAmount: 1, kcal: 70, p: 6, c: 10, f: 0, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche', 'pre_treino', 'pos_treino', 'ceia'] },
+        { id: 'iogurte_natural', name: "Iogurte Natural", keywords: ['iogurte', 'yogurte', 'danone'], category: 'doce', measure: "pote (170g)", defaultAmount: 1, kcal: 107, p: 5.7, c: 7.8, f: 5.9, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche_manha', 'lanche', 'ceia'] },
+        { id: 'cafe_puro', name: "Café (Sem Açúcar)", keywords: ['café', 'cafe', 'cafézinho'], category: 'bebida', measure: "xícara (50ml)", defaultAmount: 1, kcal: 2, p: 0.1, c: 0.3, f: 0, allowPrep: false, tier: 'green', meals: ['cafe', 'lanche_manha', 'lanche', 'pre_treino'] },
+        { id: 'suco_laranja', name: "Suco de Laranja", keywords: ['suco', 'suco de laranja'], category: 'bebida', measure: "copo (200ml)", defaultAmount: 1, kcal: 90, p: 1.4, c: 20, f: 0.4, allowPrep: false, tier: 'yellow', meals: ['cafe', 'almoco', 'lanche'] }
     ],
     preps: [
-        { id: 'cozido', name: "Cozido/Simples", kcal: 0, p: 0, c: 0, f: 0 },
-        { id: 'grelhado', name: "Grelhado (fio de azeite)", kcal: 20, p: 0, c: 0, f: 2.2 },
+        { id: 'cozido', name: "Cozido/In natura", kcal: 0, p: 0, c: 0, f: 0 },
+        { id: 'grelhado', name: "Grelhado", kcal: 20, p: 0, c: 0, f: 2.2 },
         { id: 'assado', name: "Assado", kcal: 10, p: 0, c: 0, f: 1.1 },
         { id: 'frito_oleo', name: "Frito em Óleo", kcal: 60, p: 0, c: 0, f: 6.5 },
         { id: 'frito_azeite', name: "Frito no Azeite", kcal: 45, p: 0, c: 0, f: 5 },
-        { id: 'mexido_manteiga', name: "Mexido (Manteiga)", kcal: 35, p: 0, c: 0, f: 4 },
-        { id: 'empanado', name: "Empanado e Frito", kcal: 120, p: 2, c: 15, f: 8 },
-        { id: 'alho_oleo', name: "Alho e Óleo", kcal: 70, p: 0.5, c: 2, f: 7 }
+        { id: 'mexido_manteiga', name: "Mexido", kcal: 35, p: 0, c: 0, f: 4 }
+    ]
+};
+
+const exerciseDB = {
+    peito: [
+        { name: "Supino Reto", type: "Barra/Livre" },
+        { name: "Supino Inclinado", type: "Halteres" },
+        { name: "Crucifixo", type: "Polia" },
+        { name: "Crossover", type: "Máquina" },
+        { name: "Flexão de Braço", type: "Peso Corporal" }
     ],
-    addons: [
-        { id: 'manteiga', name: "Manteiga", measure: "pontinha de faca (5g)", kcal: 36, p: 0, c: 0, f: 4, tier: 'yellow' },
-        { id: 'margarina', name: "Margarina", measure: "pontinha de faca (5g)", kcal: 36, p: 0, c: 0, f: 4, tier: 'red' },
-        { id: 'requeijao', name: "Requeijão Tradicional", measure: "colher sopa (30g)", kcal: 75, p: 3, c: 1, f: 6.5, tier: 'yellow' },
-        { id: 'requeijao_light', name: "Requeijão Light", measure: "colher sopa (30g)", kcal: 54, p: 3, c: 1, f: 4.2, tier: 'green' },
-        { id: 'maionese', name: "Maionese", measure: "colher sopa (12g)", kcal: 40, p: 0, c: 1, f: 4, tier: 'red' },
-        { id: 'ketchup', name: "Ketchup", measure: "colher sopa (12g)", kcal: 14, p: 0, c: 3.5, f: 0, tier: 'yellow' },
-        { id: 'queijo_mussarela', name: "Queijo Mussarela", measure: "fatia (30g)", kcal: 96, p: 6.8, c: 0.9, f: 7.2, tier: 'yellow' },
-        { id: 'queijo_prato', name: "Queijo Prato", measure: "fatia (30g)", kcal: 106, p: 7, c: 0.5, f: 8.5, tier: 'yellow' },
-        { id: 'queijo_branco', name: "Queijo Minas Frescal", measure: "fatia grossa (30g)", kcal: 72, p: 5, c: 1, f: 5.5, tier: 'green' },
-        { id: 'presunto', name: "Presunto Magro", measure: "fatia (15g)", kcal: 15, p: 2.5, c: 0.5, f: 0.5, tier: 'yellow' },
-        { id: 'peito_peru', name: "Peito de Peru", measure: "fatia (15g)", kcal: 16, p: 3.5, c: 0, f: 0.2, tier: 'green' },
-        { id: 'mel', name: "Mel", measure: "colher chá (10g)", kcal: 30, p: 0, c: 8, f: 0, tier: 'yellow' },
-        { id: 'pasta_amendoim', name: "Pasta de Amendoim", measure: "colher sopa (15g)", kcal: 94, p: 4.2, c: 2.6, f: 7.6, tier: 'green' },
-        { id: 'pate_frango', name: "Patê de Frango Caseiro", measure: "colher sopa (30g)", kcal: 45, p: 4, c: 1, f: 2.5, tier: 'green' },
-        { id: 'azeite', name: "Azeite de Oliva", measure: "colher sopa (13ml)", kcal: 119, p: 0, c: 0, f: 13.5, tier: 'green' },
-        { id: 'salada', name: "Salada Verde", measure: "porção", kcal: 15, p: 1, c: 3, f: 0, tier: 'green' },
-        { id: 'acucar', name: "Açúcar Refinado", measure: "colher chá (5g)", kcal: 20, p: 0, c: 5, f: 0, tier: 'red' }
+    costas: [
+        { name: "Puxada Frontal", type: "Polia" },
+        { name: "Remada Curvada", type: "Barra Livre" },
+        { name: "Remada Baixa", type: "Máquina" },
+        { name: "Pull-down", type: "Polia" },
+        { name: "Barra Fixa", type: "Peso Corporal" }
+    ],
+    pernas: [
+        { name: "Agachamento Livre", type: "Barra/Livre" },
+        { name: "Leg Press 45º", type: "Máquina" },
+        { name: "Cadeira Extensora", type: "Máquina" },
+        { name: "Mesa Flexora", type: "Máquina" },
+        { name: "Elevação Pélvica", type: "Livre" }
+    ],
+    bracos: [
+        { name: "Rosca Direta", type: "Barra" },
+        { name: "Rosca Martelo", type: "Halteres" },
+        { name: "Tríceps na Corda", type: "Polia" },
+        { name: "Tríceps Testa", type: "Barra W" },
+        { name: "Tríceps Banco", type: "Peso Corporal" }
+    ],
+    core: [
+        { name: "Abdominal Supra", type: "Solo" },
+        { name: "Prancha Isométrica", type: "Solo" },
+        { name: "Elevação de Pernas", type: "Solo" }
+    ],
+    ombro: [
+        { name: "Desenvolvimento", type: "Halteres" },
+        { name: "Elevação Lateral", type: "Halteres" },
+        { name: "Elevação Frontal", type: "Polia" }
     ]
 };
 
@@ -123,29 +159,21 @@ const mealNames = [
     { id: "ceia", name: "Ceia", icon: "🌛", time: "22:00" }
 ];
 
-const workoutsDB = {
-    A: { title: "Treino A - Peito e Tríceps", exercises: [{ name: "Supino Reto", sets: "4", reps: "8-12" }, { name: "Crucifixo Máquina", sets: "3", reps: "12-15" }, { name: "Tríceps Pulley", sets: "4", reps: "12" }] },
-    B: { title: "Treino B - Costas e Bíceps", exercises: [{ name: "Puxada Frontal", sets: "4", reps: "10-12" }, { name: "Remada Curvada", sets: "4", reps: "8-12" }, { name: "Rosca Direta", sets: "4", reps: "10" }] },
-    C: { title: "Treino C - Pernas", exercises: [{ name: "Agachamento Livre", sets: "4", reps: "8-12" }, { name: "Leg Press 45º", sets: "4", reps: "10-15" }, { name: "Cadeira Extensora", sets: "4", reps: "15" }] }
-};
-
 let userData = JSON.parse(localStorage.getItem('goFitUserData')) || null;
+if (userData && !userData.name) { userData = null; localStorage.removeItem('goFitUserData'); localStorage.removeItem('goFitDailyLog'); }
+
 let dailyLog = getDailyLog();
 let currentWorkoutTab = 'A';
-
-// ESTADO DO CONSTRUTOR DE REFEIÇÃO
-let mealBuilder = {
-    mealId: null,
-    base: null,
-    amount: 1,
-    prepId: 'cozido',
-    addons: []
-};
+let smartBuilderList = []; 
 
 window.onload = () => {
-    updateDynamicGreeting();
-    if (userData) { startApp(); } else { showView('onboarding'); }
-    initSpotlight(); 
+    if (userData) { 
+        updateDynamicGreeting();
+        startApp(); 
+    } else { 
+        showView('onboarding'); 
+    }
+    initMagneticCards(); 
     document.body.addEventListener('click', () => { if (audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true });
 };
 
@@ -160,20 +188,10 @@ function showToast(message) {
 function updateDynamicGreeting() {
     const hour = new Date().getHours();
     let greeting = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
-    const titleElement = document.getElementById('greeting-title');
-    const welcomeElement = document.getElementById('welcome-text');
-    if(titleElement) titleElement.innerText = `${greeting}!`;
-    if(welcomeElement) welcomeElement.innerText = `${greeting}! 👋`;
-}
-
-function initSpotlight() {
-    document.querySelectorAll('.spotlight-card').forEach(card => {
-        card.addEventListener('mousemove', e => {
-            const rect = card.getBoundingClientRect();
-            card.style.setProperty('--x', `${e.clientX - rect.left}px`);
-            card.style.setProperty('--y', `${e.clientY - rect.top}px`);
-        });
-    });
+    const titleElement = document.getElementById('dynamic-greeting-main');
+    if(titleElement) titleElement.innerText = `${greeting}, ${userData.name}!`;
+    document.getElementById('ui-user-name').innerText = userData.name.split(' ')[0];
+    document.getElementById('ui-avatar').innerText = userData.name.substring(0, 2).toUpperCase();
 }
 
 function animateValue(obj, start, end, duration) {
@@ -239,21 +257,63 @@ function calcDietData(age, weight, height, goal) {
     return { tdee, protTarget, carbTarget, fatTarget };
 }
 
+function generateWorkouts(focuses, goal) {
+    let reps = goal === 'emagrecer' ? "12-15" : goal === 'ganhar' ? "8-10" : "10-12";
+    let sets = goal === 'ganhar' ? 4 : 3;
+    let rest = goal === 'emagrecer' ? "45s" : "90s";
+
+    if(!focuses || focuses.length === 0) focuses = ['peito', 'costas', 'pernas', 'bracos', 'core'];
+    const shuffle = (arr) => arr.sort(() => 0.5 - Math.random());
+    
+    const buildDay = (group1, group2) => {
+        let dayEx = [];
+        if (exerciseDB[group1]) dayEx.push(...shuffle(exerciseDB[group1]).slice(0, 3));
+        if (group2 && exerciseDB[group2]) dayEx.push(...shuffle(exerciseDB[group2]).slice(0, 3));
+        return dayEx.map(ex => ({ name: ex.name, type: ex.type, sets: sets, reps: reps, rest: rest }));
+    };
+
+    let wA, wB, wC;
+    if (focuses.includes('peito') || focuses.includes('bracos')) {
+        wA = buildDay('peito', 'bracos'); wB = buildDay('costas', 'core'); wC = buildDay('pernas', 'ombro');
+    } else if (focuses.includes('pernas')) {
+        wA = buildDay('pernas', 'core'); wB = buildDay('costas', 'bracos'); wC = buildDay('peito', 'ombro');
+    } else {
+        wA = buildDay('peito', 'ombro'); wB = buildDay('costas', 'bracos'); wC = buildDay('pernas', 'core');
+    }
+    return { 
+        A: { title: "Treino A", focus: "Push / Foco Primário", exercises: wA },
+        B: { title: "Treino B", focus: "Pull / Foco Secundário", exercises: wB },
+        C: { title: "Treino C", focus: "Inferiores / Core", exercises: wC }
+    };
+}
+
 function saveProfile() {
     triggerFeedback('click');
+    const name = document.getElementById('input-name').value.trim();
     const age = parseInt(document.getElementById('input-age').value);
     const weight = parseFloat(document.getElementById('input-weight').value);
     const height = parseFloat(document.getElementById('input-height').value);
     const goal = document.getElementById('input-goal').value;
 
-    if (!age || !weight || !height) return showToast("⚠️ Preencha todos os campos.");
+    const focusCheckboxes = document.querySelectorAll('.focus-cb:checked');
+    let focuses = Array.from(focusCheckboxes).map(cb => cb.value);
+
+    if (!name || !age || !weight || !height) return showToast("⚠️ Preencha todos os campos.");
 
     const diet = calcDietData(age, weight, height, goal);
-    userData = { age, weight, height, goal, tdee: diet.tdee, waterGoal: Math.round(weight * 40), macros: { p: diet.protTarget, c: diet.carbTarget, f: diet.fatTarget } };
+    const workouts = generateWorkouts(focuses, goal);
+
+    userData = { 
+        name, age, weight, height, goal, focuses,
+        tdee: diet.tdee, waterGoal: Math.round(weight * 40), 
+        macros: { p: diet.protTarget, c: diet.carbTarget, f: diet.fatTarget },
+        workouts: workouts
+    };
 
     dailyLog = getDailyLog();
     saveState();
-    triggerFeedback('success'); fireConfetti(); showToast("✅ Dieta GoFit gerada!");
+    updateDynamicGreeting();
+    triggerFeedback('success'); fireConfetti(); showToast("✅ Smart Dashboard Inicializado!");
     startApp();
 }
 
@@ -278,19 +338,10 @@ function updateProfile() {
     userData.tdee = diet.tdee;
     userData.waterGoal = Math.round(newWeight * 40);
     userData.macros = { p: diet.protTarget, c: diet.carbTarget, f: diet.fatTarget };
+    userData.workouts = generateWorkouts(userData.focuses, newGoal); 
 
     saveState();
-    triggerFeedback('success'); showToast("✅ Perfil atualizado!");
-}
-
-function setWaterRingProgress(percent) {
-    const circle = document.getElementById('water-ring');
-    const radius = circle.r.baseVal.value;
-    const circumference = radius * 2 * Math.PI; 
-    const offset = circumference - (Math.min(percent, 100) / 100) * circumference;
-    circle.style.strokeDasharray = `${circumference} ${circumference}`;
-    circle.style.strokeDashoffset = offset;
-    document.getElementById('water-percent').innerText = `${Math.floor(percent)}%`;
+    triggerFeedback('success'); showToast("✅ Métricas atualizadas!");
 }
 
 function addWater(amount) {
@@ -298,97 +349,183 @@ function addWater(amount) {
     dailyLog.waterConsumed += amount;
     saveState();
     const waterAfter = (dailyLog.waterConsumed / userData.waterGoal) * 100;
-    if (waterBefore < 100 && waterAfter >= 100) { triggerFeedback('success'); fireConfetti(); showToast("🎉 Meta de água batida!"); } 
+    if (waterBefore < 100 && waterAfter >= 100) { triggerFeedback('success'); fireConfetti(); showToast("🎉 Meta de hidratação batida!"); } 
     else { triggerFeedback('click'); showToast(`💧 +${amount}ml registrados!`); }
 }
 
-function updateMacroRing(ringId, consumed, target, radius) {
-    const circle = document.getElementById(ringId);
-    const circumference = radius * 2 * Math.PI;
-    const safeTarget = target || 1; 
-    const percent = Math.min((consumed / safeTarget) * 100, 100) || 0;
-    const offset = circumference - (percent / 100) * circumference;
-    circle.style.strokeDasharray = `${circumference} ${circumference}`;
-    circle.style.strokeDashoffset = offset;
+function updateDynamicBar(elementId, textId, consumed, target) {
+    const bar = document.getElementById(elementId);
+    const text = document.getElementById(textId);
+    if(!bar || !text) return;
+    
+    let safeTarget = target || 1;
+    let ratio = consumed / safeTarget;
+    let percent = Math.min(ratio * 100, 100);
+    
+    bar.style.width = `${percent}%`;
+    text.innerText = `${Math.round(consumed)}g / ${target}g`;
+    
+    bar.classList.remove('bg-good', 'bg-warn', 'bg-danger', 'bg-amber-default');
+    if (ratio <= 0.85) {
+        bar.classList.add('bg-good');
+    } else if (ratio > 0.85 && ratio <= 1.05) {
+        bar.classList.add('bg-warn');
+    } else {
+        bar.classList.add('bg-danger');
+    }
+}
+
+function updateSmartInsights(consumed) {
+    const insightPill = document.getElementById('smart-insight-pill');
+    const insightText = document.getElementById('smart-insight-text');
+    const icon = document.getElementById('insight-icon');
+    
+    const hour = new Date().getHours();
+    const protRatio = consumed.p / (userData.macros?.p || 1);
+    const calRatio = consumed.kcal / (userData.tdee || 1);
+    
+    insightPill.style.borderColor = "var(--border-strong)";
+    
+    if (calRatio > 1.05) {
+        icon.innerText = "⚠️";
+        insightText.innerText = "Atenção: Você ultrapassou seu limite de calorias hoje.";
+        insightPill.style.borderLeftColor = "var(--color-red)";
+    } else if (hour > 14 && protRatio < 0.5) {
+        icon.innerText = "🔥";
+        insightText.innerText = `Foco na Proteína! Faltam ${Math.round(userData.macros.p - consumed.p)}g.`;
+        insightPill.style.borderLeftColor = "var(--color-yellow)";
+    } else if (calRatio > 0.8 && calRatio <= 1.0) {
+        icon.innerText = "🎯";
+        insightText.innerText = "Quase lá! Foco para não estourar a meta do dia.";
+        insightPill.style.borderLeftColor = "var(--color-green)";
+    } else if (dailyLog.waterConsumed >= userData.waterGoal) {
+        icon.innerText = "💧";
+        insightText.innerText = "Hidratação perfeita hoje. Excelente trabalho!";
+        insightPill.style.borderLeftColor = "var(--blue-water)";
+    } else {
+        icon.innerText = "💡";
+        insightText.innerText = "Tudo sob controle. Continue registrando seus hábitos.";
+        insightPill.style.borderLeftColor = "var(--amber)";
+    }
 }
 
 function updateDashboardUI() {
     let consumed = { kcal: 0, p: 0, c: 0, f: 0 };
     dailyLog.foods.forEach(f => { consumed.kcal += f.kcal; consumed.p += f.p; consumed.c += f.c; consumed.f += f.f; });
 
-    document.getElementById('ui-tdee').innerText = `Meta Diária: ${userData.tdee} kcal`;
-    animateValue(document.getElementById('ui-calories'), parseInt(document.getElementById('ui-calories').innerText), Math.max(0, userData.tdee - consumed.kcal), 500);
+    document.getElementById('ui-tdee').innerText = `Meta diária: ${userData.tdee} kcal`;
+    let calLeft = Math.max(0, userData.tdee - consumed.kcal);
+    animateValue(document.getElementById('ui-calories'), parseInt(document.getElementById('ui-calories').innerText || 0), calLeft, 500);
     
-    updateMacroRing('ring-prot', consumed.p, userData.macros?.p, 50);
-    updateMacroRing('ring-carb', consumed.c, userData.macros?.c, 38);
-    updateMacroRing('ring-fat', consumed.f, userData.macros?.f, 26);
+    let calPercent = Math.min((consumed.kcal / userData.tdee) * 100, 100);
+    const calBar = document.getElementById('cal-progress');
+    calBar.style.width = `${calPercent}%`;
+    calBar.classList.remove('bg-amber-default', 'bg-danger');
+    calBar.classList.add(calPercent > 100 ? 'bg-danger' : 'bg-amber-default');
 
-    document.getElementById('ui-prot').innerText = `P: ${Math.round(consumed.p)}g`;
-    document.getElementById('ui-carb').innerText = `C: ${Math.round(consumed.c)}g`;
-    document.getElementById('ui-fat').innerText = `G: ${Math.round(consumed.f)}g`;
+    updateDynamicBar('bar-prot', 'txt-p', consumed.p, userData.macros?.p);
+    updateDynamicBar('bar-carb', 'txt-c', consumed.c, userData.macros?.c);
+    updateDynamicBar('bar-fat', 'txt-f', consumed.f, userData.macros?.f);
 
-    const waterPercent = (dailyLog.waterConsumed / userData.waterGoal) * 100;
-    document.getElementById('ui-water-status').innerText = `${dailyLog.waterConsumed} / ${userData.waterGoal}ml`;
-    setTimeout(() => setWaterRingProgress(waterPercent), 100);
+    const waterPercent = Math.floor(Math.min((dailyLog.waterConsumed / userData.waterGoal) * 100, 100));
+    document.getElementById('ui-water-status').innerText = `${dailyLog.waterConsumed} / ${userData.waterGoal} ml`;
+    document.getElementById('water-percent').innerText = `${waterPercent}%`;
+
+    updateSmartInsights(consumed);
 
     const logContainer = document.getElementById('food-log');
     logContainer.innerHTML = '';
-    if (dailyLog.foods.length === 0) logContainer.innerHTML = '<p style="text-align:center; color:var(--text-light); font-size:14px; padding: 25px 0;">Nada registrado ainda hoje.</p>';
-
-    dailyLog.foods.forEach((food, index) => {
-        const item = document.createElement('div');
-        item.className = 'food-log-item stagger-item';
-        item.style.animationDelay = `${index * 0.05}s`;
-        const mealAssoc = mealNames.find(m => m.id === food.mealId).name;
-        item.innerHTML = `
-            <div class="log-info" style="display: flex; align-items: flex-start; gap: 10px;">
-                <span class="tier-dot tier-${food.tier}" style="margin-top: 5px;"></span>
-                <div>
-                    <h4 style="margin: 0; font-size: 14px; line-height: 1.4;">${food.fullName}</h4>
-                    <p style="font-size: 11px; color: var(--text-light); margin: 2px 0 0 0;">${mealAssoc}</p>
+    if (dailyLog.foods.length === 0) {
+        logContainer.innerHTML = '<p style="text-align:center; color:var(--text-light); font-size:13px; padding: 25px 0;">Nenhuma refeição registrada hoje.</p>';
+    } else {
+        dailyLog.foods.forEach((food, index) => {
+            const item = document.createElement('div');
+            item.className = 'timeline-node stagger-item';
+            item.style.animationDelay = `${index * 0.05}s`;
+            const mealAssoc = mealNames.find(m => m.id === food.mealId);
+            
+            item.innerHTML = `
+                <div class="node-dot active"></div>
+                <div class="node-content">
+                    <div>
+                        <h4 class="node-title">${food.fullName}</h4>
+                        <p class="node-sub">${mealAssoc.time} • ${mealAssoc.name}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="node-val">${Math.round(food.kcal)} kcal</span>
+                        <button class="btn-remove-node" onclick="removeFood(${index})">✕</button>
+                    </div>
                 </div>
-            </div>
-            <div style="text-align: right; flex-shrink: 0; margin-left: 10px;">
-                <b style="color:var(--primary-light); display:block; margin-bottom:6px;">${Math.round(food.kcal)} kcal</b>
-                <button class="btn-remove" onclick="removeFood(${index})">Remover</button>
-            </div>
-        `;
-        logContainer.appendChild(item);
-    });
+            `;
+            logContainer.appendChild(item);
+        });
+    }
+}
+
+function removeFood(index) {
+    triggerFeedback('click');
+    dailyLog.foods.splice(index, 1);
+    saveState();
 }
 
 function renderMeals() {
     const carousel = document.getElementById('meals-carousel');
     carousel.innerHTML = '';
+    
     mealNames.forEach((meal, index) => {
         const mealFoods = dailyLog.foods.filter(f => f.mealId === meal.id);
         const mealKcal = mealFoods.reduce((acc, f) => acc + f.kcal, 0);
-        let foodsHtml = mealFoods.length > 0 ? `<p class="meal-card-details">${mealFoods.map(f => f.baseName).join(', ')}</p>` : `<p class="meal-card-details" style="color:rgba(255,255,255,0.3)">Nenhum alimento</p>`;
+        
+        let foodsHtml = mealFoods.length > 0 ? `<p class="meal-card-details">${mealFoods.map(f => f.baseName).join(', ')}</p>` : `<p class="meal-card-details" style="color:var(--text-light)">Sem registros</p>`;
+        
         const card = document.createElement('div');
-        card.className = `carousel-item meal-card stagger-item spotlight-card`;
+        card.className = `carousel-item meal-card stagger-item`;
         card.style.animationDelay = `${index * 0.1}s`;
         card.innerHTML = `
-            <div style="display:flex; justify-content:space-between;"><span class="meal-time">${meal.time}</span><span style="font-size:14px; font-weight:800; color:var(--primary-light)">${Math.round(mealKcal)} kcal</span></div>
+            <div style="display:flex; justify-content:space-between;"><span class="meal-time">${meal.time}</span><span style="font-size:14px; font-weight:800; color:var(--text-main)">${Math.round(mealKcal)} kcal</span></div>
             <h4>${meal.icon} ${meal.name}</h4> ${foodsHtml}
-            <button class="meal-card-btn" onclick="openFoodModal('${meal.id}', '${meal.name}')">+ Montar</button>
+            <button class="meal-card-btn hover-scale" onclick="openFoodModal('${meal.id}', '${meal.name}')">+ Adicionar</button>
         `;
         carousel.appendChild(card);
     });
-    initSpotlight();
 }
 
-// --- WIZARD CONSTRUTOR DE REFEIÇÕES ---
+// --- WIZARD SMART BUILDER ---
+let currentMealForModal = null;
+
+window.closeFoodModal = function() {
+    document.getElementById('food-modal').classList.add('hidden');
+    currentMealForModal = null;
+    smartBuilderList = [];
+    document.querySelector('.modal-tabs').classList.remove('hidden');
+};
 
 function openFoodModal(mealId, mealName) {
     triggerFeedback('click');
-    mealBuilder.mealId = mealId;
-    document.getElementById('modal-meal-name').innerText = `Opções para o ${mealName}`;
-    document.getElementById('food-search').value = ""; // Limpar pesquisa
+    currentMealForModal = mealId;
+    document.getElementById('modal-meal-name').innerText = `Adicionar em ${mealName}`;
+    document.getElementById('food-search').value = ""; 
+    document.getElementById('smart-text-input').value = ""; 
+    
     document.getElementById('food-modal').classList.remove('hidden');
-    document.getElementById('builder-step-1').classList.remove('hidden');
     document.getElementById('builder-step-2').classList.add('hidden');
     
+    document.querySelectorAll('.modal-tab-content').forEach(el => el.classList.add('hidden'));
+    document.getElementById('modal-tab-manual').classList.remove('hidden');
+    
+    document.querySelectorAll('.modal-tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.modal-tab-btn')[0].classList.add('active');
+    
     renderFoodList("");
+}
+
+function switchModalTab(tabType) {
+    triggerFeedback('click');
+    document.querySelectorAll('.modal-tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.modal-tab-content').forEach(el => el.classList.add('hidden'));
+    
+    event.currentTarget.classList.add('active');
+    document.getElementById(`modal-tab-${tabType}`).classList.remove('hidden');
 }
 
 function filterFoods() {
@@ -404,35 +541,23 @@ function renderFoodList(searchTerm) {
     let recommended = [];
     let others = [];
     
-    // Filtro Contextual Inteligente
     foodDB.bases.forEach(base => {
         if(base.name.toLowerCase().includes(term)) {
-            if (base.meals.includes(mealBuilder.mealId)) {
-                recommended.push(base);
-            } else {
-                others.push(base);
-            }
+            if (base.meals.includes(currentMealForModal)) recommended.push(base);
+            else others.push(base);
         }
     });
     
-    // Gerar Bloco de Recomendados
     if(recommended.length > 0) {
-        dbList.innerHTML += `<h4 class="gradient-text-sub" style="font-size:14px; margin-bottom:10px;">Sugestões Inteligentes</h4>`;
-        recommended.forEach((base, index) => {
-            dbList.appendChild(createFoodItemElement(base, index));
-        });
+        dbList.innerHTML += `<h4 class="gradient-text-sub" style="font-size:13px; margin-bottom:10px; margin-top:10px;">Sugeridos para este horário</h4>`;
+        recommended.forEach((base, index) => dbList.appendChild(createFoodItemElement(base, index)));
     }
-    
-    // Gerar Bloco de Outros (Liberdade Total)
     if(others.length > 0) {
-        dbList.innerHTML += `<h4 class="gradient-text-sub" style="font-size:14px; margin: 20px 0 10px 0;">Menu Completo</h4>`;
-        others.forEach((base, index) => {
-            dbList.appendChild(createFoodItemElement(base, index + recommended.length));
-        });
+        dbList.innerHTML += `<h4 class="gradient-text-sub" style="font-size:13px; margin: 20px 0 10px 0;">Menu Completo</h4>`;
+        others.forEach((base, index) => dbList.appendChild(createFoodItemElement(base, index + recommended.length)));
     }
-    
     if(recommended.length === 0 && others.length === 0) {
-        dbList.innerHTML = `<p style="color:var(--text-light); text-align:center; font-size:13px; padding:20px;">Nenhum alimento encontrado.</p>`;
+        dbList.innerHTML = `<p style="color:var(--text-light); text-align:center; font-size:13px; padding:20px;">Nenhum item encontrado.</p>`;
     }
 }
 
@@ -440,218 +565,298 @@ function createFoodItemElement(base, delayIndex) {
     const div = document.createElement('div');
     div.className = 'food-db-item stagger-item';
     div.style.animationDelay = `${delayIndex * 0.05}s`;
-    div.onclick = () => selectBaseFood(base);
+    
+    div.onclick = () => {
+        smartBuilderList = [{ base: base, amount: base.defaultAmount, prepId: 'cozido', confidence: null }];
+        openSmartReview();
+    };
+    
     div.innerHTML = `
         <div style="display: flex; align-items: center; gap: 12px;">
              <span class="tier-dot tier-${base.tier}"></span>
             <div>
-                <span style="font-weight:800; font-size:15px; color:white; display:block; margin-bottom:4px;">${base.name}</span>
-                <span style="font-size: 12px; color: var(--text-light);">${base.measure} • P:${base.p} C:${base.c} G:${base.f}</span>
+                <span style="font-weight:500; font-size:14px; color:white; display:block; margin-bottom:2px;">${base.name}</span>
+                <span style="font-size: 11px; color: var(--text-light);">${base.measure} • P:${base.p} C:${base.c} G:${base.f}</span>
             </div>
         </div>
-        <span style="font-weight:800; font-size: 16px; color:var(--primary-light);">${base.kcal} kcal</span>
+        <span style="font-weight:600; font-size: 14px; color:var(--text-main);">${base.kcal} kcal</span>
     `;
     return div;
 }
 
-function closeFoodModal() {
-    document.getElementById('food-modal').classList.add('hidden');
-    mealBuilder = { mealId: null, base: null, amount: 1, prepId: 'cozido', addons: [] };
+// --- TEXT & VOICE PARSING ---
+function processSmartText() {
+    triggerFeedback('click');
+    const input = document.getElementById('smart-text-input').value.toLowerCase();
+    if(!input.trim()) return showToast("⚠️ Digite ou fale algo primeiro.");
+    
+    smartBuilderList = [];
+    let foundSomething = false;
+    
+    foodDB.bases.forEach(base => {
+        let keywordsToSearch = [base.name.toLowerCase()];
+        if (base.keywords) keywordsToSearch = keywordsToSearch.concat(base.keywords.map(k => k.toLowerCase()));
+
+        let baseFound = false;
+        let matchQty = base.defaultAmount;
+
+        for (let kw of keywordsToSearch) {
+            const regex = new RegExp(`(?:(\\d+(?:[,.]\\d+)?)\\s*(?:g|ml|unidades|fatias|colher|colheres|scoop|scoops)?\\s*(?:de)?\\s*)?(${kw})\\b`, 'i');
+            const match = regex.exec(input);
+            if (match) {
+                baseFound = true;
+                if (match[1]) {
+                    const numericVal = parseFloat(match[1].replace(',', '.'));
+                    if (base.measure.includes('100g') || base.measure.includes('100ml')) matchQty = numericVal / 100;
+                    else if (base.measure.includes('50g')) matchQty = numericVal / 50;
+                    else matchQty = numericVal; 
+                }
+                break; 
+            }
+        }
+        if (baseFound) {
+            foundSomething = true;
+            smartBuilderList.push({ base: base, amount: matchQty, prepId: 'cozido', confidence: null });
+        }
+    });
+
+    if (foundSomething) {
+        showToast("🔍 Alimentos identificados com sucesso!");
+        openSmartReview();
+    } else {
+        showToast("❌ Não foi possível interpretar. Tente usar termos mais simples.");
+    }
 }
 
-function selectBaseFood(baseObj) {
+// MICROFONE NATIVO
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition;
+if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = 'pt-BR';
+    recognition.continuous = true; 
+    recognition.interimResults = true; 
+
+    recognition.onstart = function() { document.querySelector('.btn-mic').classList.add('listening'); };
+    
+    recognition.onresult = function(event) {
+        let finalTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) finalTranscript += event.results[i][0].transcript;
+        }
+        if(finalTranscript) {
+            const inputEl = document.getElementById('smart-text-input');
+            inputEl.value += (inputEl.value && !inputEl.value.endsWith(' ') ? ' ' : '') + finalTranscript;
+        }
+    };
+
+    recognition.onerror = function(event) {
+        if(event.error !== 'no-speech') showToast("❌ Erro de voz: " + event.error);
+        document.querySelector('.btn-mic').classList.remove('listening');
+    };
+
+    recognition.onend = function() {
+        document.querySelector('.btn-mic').classList.remove('listening');
+    };
+}
+function startDictation() {
+    if (!recognition) return showToast("⚠️ Seu navegador não suporta voz. Requer HTTPS.");
     triggerFeedback('click');
-    mealBuilder.base = baseObj;
-    mealBuilder.amount = baseObj.defaultAmount;
-    mealBuilder.addons = [];
-    mealBuilder.prepId = 'cozido'; // reset
-    
-    document.getElementById('builder-step-1').classList.add('hidden');
-    document.getElementById('builder-step-2').classList.remove('hidden');
-    
-    document.getElementById('build-base-name').innerText = baseObj.name;
-    document.getElementById('build-base-measure').innerText = `Medida: ${baseObj.measure}`;
-    document.getElementById('build-base-qty').innerText = mealBuilder.amount;
-    
-    // Configura Modo de Preparo
-    const prepContainer = document.getElementById('prep-method-container');
-    const prepSelect = document.getElementById('build-prep-select');
-    if (baseObj.allowPrep) {
-        prepContainer.classList.remove('hidden');
-        prepSelect.innerHTML = '';
-        foodDB.preps.forEach(prep => {
-            prepSelect.innerHTML += `<option value="${prep.id}">${prep.name}</option>`;
-        });
-        mealBuilder.prepId = prepSelect.value;
-    } else {
-        prepContainer.classList.add('hidden');
-        mealBuilder.prepId = 'cozido'; 
+    const micBtn = document.querySelector('.btn-mic');
+    if (micBtn.classList.contains('listening')) {
+        recognition.stop();
+        showToast("🎙️ Captação finalizada.");
+    } else { 
+        showToast("🎙️ Pode falar! Estou ouvindo..."); 
+        try { recognition.start(); } catch(e) { }
     }
-    
-    // Renderiza Complementos
-    const addonsList = document.getElementById('addons-list-container');
-    addonsList.innerHTML = '';
-    foodDB.addons.forEach(addon => {
-        const div = document.createElement('div');
-        div.className = 'addon-item';
-        div.innerHTML = `
-            <div style="display:flex; align-items:center;">
-                <input type="checkbox" class="addon-checkbox" id="chk-${addon.id}" onchange="toggleAddon('${addon.id}', this.checked)">
-                <label for="chk-${addon.id}" style="color:white; font-size:14px; font-weight:600; cursor:pointer;">
-                    <span class="tier-dot tier-${addon.tier}"></span>${addon.name} <br><small style="color:var(--text-light); font-weight:normal; margin-left: 20px;">${addon.measure}</small>
-                </label>
-            </div>
-            <div class="qty-buttons" id="qty-box-${addon.id}" style="display:none;">
-                <button class="qty-btn" onclick="changeAddonQty('${addon.id}', -1)">-</button>
-                <span id="addon-qty-val-${addon.id}" style="color:white; font-weight:bold; min-width: 20px; text-align:center;">1</span>
-                <button class="qty-btn" onclick="changeAddonQty('${addon.id}', 1)">+</button>
-            </div>
-        `;
-        addonsList.appendChild(div);
-    });
-    
-    updateLivePreview();
+}
+
+// --- VISÃO COMPUTACIONAL (MOTOR LOCAL) ---
+function startLocalImageScan(inputElement) {
+    if (!inputElement.files || !inputElement.files[0]) return;
+    const file = inputElement.files[0];
+    const reader = new FileReader();
+
+    triggerFeedback('click');
+    const cameraArea = document.getElementById('camera-area');
+    const scannerBox = document.getElementById('scanner-box');
+    cameraArea.classList.add('hidden');
+    scannerBox.classList.remove('hidden');
+
+    reader.onloadend = async function() {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+            canvas.width = 100; canvas.height = 100; ctx.drawImage(img, 0, 0, 100, 100);
+            const imageData = ctx.getImageData(0, 0, 100, 100).data;
+            let colors = { green: 0, brownYellow: 0, white: 0, red: 0, total: 0 };
+
+            for (let i = 0; i < imageData.length; i += 4) {
+                let r = imageData[i], g = imageData[i+1], b = imageData[i+2], a = imageData[i+3];
+                if (a < 128) continue; 
+                let l = (Math.max(r, g, b) + Math.min(r, g, b)) / 2;
+                if (l < 40) continue; 
+                colors.total++;
+                if (r > 200 && g > 200 && b > 200) colors.white++; 
+                else if (g > r && g > b + 20) colors.green++; 
+                else if (r > g + 30 && r > b + 30) colors.red++; 
+                else if (r > 100 && g > 80 && b < 150 && r > b && g > b) colors.brownYellow++; 
+            }
+
+            let pct = { green: colors.green/colors.total, brown: colors.brownYellow/colors.total, white: colors.white/colors.total, red: colors.red/colors.total };
+            let mappedItems = [];
+            if (pct.green > 0.15) mappedItems.push({ base: foodDB.bases.find(f=>f.id==='salada'), confidence: pct.green });
+            if (pct.white > 0.25) mappedItems.push({ base: foodDB.bases.find(f=>f.id==='arroz_branco'), confidence: pct.white });
+            if (pct.brown > 0.35) mappedItems.push({ base: foodDB.bases.find(f=>f.id==='frango'), confidence: pct.brown });
+
+            setTimeout(() => {
+                inputElement.value = ""; scannerBox.classList.add('hidden'); cameraArea.classList.remove('hidden');
+                if (mappedItems.length === 0) return showToast("❌ Não foi possível identificar pelas cores. Tente usar Texto.");
+                smartBuilderList = mappedItems.map(i => ({ base: i.base, amount: i.base.defaultAmount, prepId: 'cozido', confidence: i.confidence }));
+                triggerFeedback('success'); showToast("📸 Análise Concluída."); openSmartReview();
+            }, 1500);
+        };
+        img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+// --- WIZARD REVIEW ---
+function openSmartReview() {
+    document.querySelectorAll('.modal-tab-content').forEach(el => el.classList.add('hidden'));
+    document.querySelector('.modal-tabs').classList.add('hidden');
+    document.getElementById('builder-step-2').classList.remove('hidden');
+    document.getElementById('ai-context-msg').innerText = "";
+    renderSmartReviewList();
 }
 
 function goBackToStep1() {
     triggerFeedback('click');
     document.getElementById('builder-step-2').classList.add('hidden');
-    document.getElementById('builder-step-1').classList.remove('hidden');
+    document.querySelector('.modal-tabs').classList.remove('hidden');
+    document.getElementById('modal-tab-manual').classList.remove('hidden');
 }
 
-function changeBaseQty(delta) {
+function discardSmartAssembly() {
     triggerFeedback('click');
-    if(mealBuilder.amount + delta > 0) {
-        mealBuilder.amount += delta;
-        document.getElementById('build-base-qty').innerText = mealBuilder.amount;
-        updateLivePreview();
-    }
+    smartBuilderList = [];
+    document.getElementById('builder-step-2').classList.add('hidden');
+    document.querySelector('.modal-tabs').classList.remove('hidden');
+    switchModalTab('photo'); 
+    showToast("🗑️ Lista descartada.");
 }
 
-function toggleAddon(addonId, isChecked) {
-    triggerFeedback('click');
-    const qtyBox = document.getElementById(`qty-box-${addonId}`);
-    if (isChecked) {
-        qtyBox.style.display = 'flex';
-        mealBuilder.addons.push({ id: addonId, amount: 1 });
-    } else {
-        qtyBox.style.display = 'none';
-        mealBuilder.addons = mealBuilder.addons.filter(a => a.id !== addonId);
-    }
-    updateLivePreview();
-}
+function renderSmartReviewList() {
+    const list = document.getElementById('smart-review-list');
+    list.innerHTML = '';
+    let isFromAI = false;
 
-function changeAddonQty(addonId, delta) {
-    triggerFeedback('click');
-    let addon = mealBuilder.addons.find(a => a.id === addonId);
-    if (addon && addon.amount + delta > 0) {
-        addon.amount += delta;
-        document.getElementById(`addon-qty-val-${addonId}`).innerText = addon.amount;
-        updateLivePreview();
-    }
-}
-
-function calculateCurrentMacros() {
-    let total = { kcal: 0, p: 0, c: 0, f: 0 };
-    
-    const base = mealBuilder.base;
-    const qty = mealBuilder.amount;
-    total.kcal += base.kcal * qty;
-    total.p += base.p * qty;
-    total.c += base.c * qty;
-    total.f += base.f * qty;
-    
-    if (base.allowPrep) {
-        const prepSelect = document.getElementById('build-prep-select');
-        mealBuilder.prepId = prepSelect ? prepSelect.value : 'cozido';
-        const prep = foodDB.preps.find(p => p.id === mealBuilder.prepId);
-        if (prep) {
-            total.kcal += prep.kcal * qty;
-            total.p += prep.p * qty;
-            total.c += prep.c * qty;
-            total.f += prep.f * qty;
+    smartBuilderList.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'card matte-glass';
+        div.style.marginBottom = '15px'; div.style.padding = '15px';
+        
+        let confBadge = "";
+        if (item.confidence !== null) {
+            isFromAI = true;
+            let confPercent = Math.round(item.confidence * 100);
+            let confClass = confPercent >= 50 ? 'conf-high' : 'conf-med';
+            confBadge = `<span class="confidence-badge ${confClass}">🤖 Lente: ${confPercent}%</span>`;
         }
-    }
 
-    mealBuilder.addons.forEach(a => {
-        const dbAddon = foodDB.addons.find(db => db.id === a.id);
-        total.kcal += dbAddon.kcal * a.amount;
-        total.p += dbAddon.p * a.amount;
-        total.c += dbAddon.c * a.amount;
-        total.f += dbAddon.f * a.amount;
+        let prepOptionsHtml = "";
+        if (item.base.allowPrep) {
+            let options = foodDB.preps.map(p => `<option value="${p.id}" ${item.prepId === p.id ? 'selected' : ''}>${p.name}</option>`).join('');
+            prepOptionsHtml = `
+                <div style="margin-top: 15px;">
+                    <label style="font-size:11px; color:var(--text-light); display:block; margin-bottom:5px; text-transform:uppercase;">Modo de Preparo</label>
+                    <select class="form-control" style="padding:10px; font-size:13px;" onchange="updateSmartItemPrep(${index}, this.value)">${options}</select>
+                </div>
+            `;
+        }
+
+        div.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h4 style="color:var(--text-main); margin:0; font-size:15px; font-weight: 500;">${item.base.name} ${confBadge}</h4>
+                <button style="background:transparent; border:none; color:var(--text-light); font-size:24px; cursor:pointer;" onclick="removeSmartItem(${index})">×</button>
+            </div>
+            <div class="qty-control-wrapper">
+                <span style="color:var(--text-light); font-size:12px;">Qtd (${item.base.measure})</span>
+                <div class="qty-buttons">
+                    <button class="qty-btn" onclick="updateSmartItemQty(${index}, -0.5)">-</button>
+                    <span style="color:var(--text-main); font-weight:600; min-width: 25px; text-align:center; font-size:16px;">${item.amount}</span>
+                    <button class="qty-btn" onclick="updateSmartItemQty(${index}, 0.5)">+</button>
+                </div>
+            </div>
+            ${prepOptionsHtml}
+        `;
+        list.appendChild(div);
     });
+    
+    if(smartBuilderList.length === 0) list.innerHTML = `<p style="text-align:center; color:var(--text-light); padding: 20px;">Nenhum item na lista.</p>`;
+    else if (isFromAI) document.getElementById('ai-context-msg').innerText = "✓ Análise concluída. Exclua o que for incorreto.";
+    
+    updateSmartLivePreview();
+}
 
+function updateSmartItemQty(index, delta) {
+    triggerFeedback('click');
+    if (smartBuilderList[index].amount + delta > 0) { smartBuilderList[index].amount += delta; renderSmartReviewList(); }
+}
+
+function updateSmartItemPrep(index, prepId) {
+    smartBuilderList[index].prepId = prepId; updateSmartLivePreview();
+}
+
+function removeSmartItem(index) {
+    triggerFeedback('click'); smartBuilderList.splice(index, 1); renderSmartReviewList();
+}
+
+function calculateSmartTotalMacros() {
+    let total = { kcal: 0, p: 0, c: 0, f: 0 };
+    smartBuilderList.forEach(item => {
+        const qty = item.amount;
+        total.kcal += item.base.kcal * qty; total.p += item.base.p * qty; total.c += item.base.c * qty; total.f += item.base.f * qty;
+        if (item.base.allowPrep) {
+            const prep = foodDB.preps.find(p => p.id === item.prepId);
+            if (prep) { total.kcal += prep.kcal * qty; total.p += prep.p * qty; total.c += prep.c * qty; total.f += prep.f * qty; }
+        }
+    });
     return total;
 }
 
-function updateLivePreview() {
-    const macros = calculateCurrentMacros();
+function updateSmartLivePreview() {
+    const macros = calculateSmartTotalMacros();
     document.getElementById('live-kcal').innerText = Math.round(macros.kcal);
     document.getElementById('live-prot').innerText = `${Math.round(macros.p)}g`;
     document.getElementById('live-carb').innerText = `${Math.round(macros.c)}g`;
     document.getElementById('live-fat').innerText = `${Math.round(macros.f)}g`;
 }
 
-function confirmMealAssembly() {
+function confirmSmartAssembly() {
+    if (smartBuilderList.length === 0) return showToast("⚠️ Adicione itens antes de salvar.");
     triggerFeedback('success');
-    const macros = calculateCurrentMacros();
     
-    let prepName = "";
-    if (mealBuilder.base.allowPrep && mealBuilder.prepId !== 'cozido') {
-        const pObj = foodDB.preps.find(p => p.id === mealBuilder.prepId);
-        prepName = pObj ? ` (${pObj.name})` : "";
-    }
-
-    let addonsText = "";
-    if (mealBuilder.addons.length > 0) {
-        let names = mealBuilder.addons.map(a => {
-            let dbA = foodDB.addons.find(db => db.id === a.id);
-            return `${a.amount > 1 ? a.amount+'x ' : ''}${dbA.name}`;
-        });
-        addonsText = " + " + names.join(', ');
-    }
-
-    const finalFoodObject = {
-        mealId: mealBuilder.mealId,
-        baseName: mealBuilder.base.name,
-        fullName: `${mealBuilder.amount}x ${mealBuilder.base.name}${prepName}${addonsText}`,
-        tier: mealBuilder.base.tier, // A cor primária será a do alimento base
-        kcal: macros.kcal,
-        p: macros.p,
-        c: macros.c,
-        f: macros.f
-    };
-
-    // SISTEMA DE CONTROLE (Alertas Inteligentes)
-    let currentKcal = 0;
-    let redCount = 0;
-    dailyLog.foods.forEach(f => {
-        currentKcal += f.kcal;
-        if(f.tier === 'red') redCount++;
+    smartBuilderList.forEach(item => {
+        let prepName = "";
+        if (item.base.allowPrep && item.prepId !== 'cozido') {
+            const pObj = foodDB.preps.find(p => p.id === item.prepId);
+            prepName = pObj ? ` (${pObj.name})` : "";
+        }
+        let iKcal = item.base.kcal * item.amount; let iP = item.base.p * item.amount; let iC = item.base.c * item.amount; let iF = item.base.f * item.amount;
+        if (item.base.allowPrep) {
+            const prep = foodDB.preps.find(p => p.id === item.prepId);
+            if (prep) { iKcal += prep.kcal * item.amount; iP += prep.p * item.amount; iC += prep.c * item.amount; iF += prep.f * item.amount; }
+        }
+        dailyLog.foods.push({ mealId: currentMealForModal, baseName: item.base.name, fullName: `${item.amount}x ${item.base.name}${prepName}`, tier: item.base.tier, kcal: iKcal, p: iP, c: iC, f: iF });
     });
-    
-    dailyLog.foods.push(finalFoodObject);
-    saveState();
-    closeFoodModal();
 
-    let newTotalKcal = currentKcal + macros.kcal;
-    if(newTotalKcal > userData.tdee * 1.1) {
-        // Alerta de excesso calórico
-        showToast("⚠️ Atenção: Você ultrapassou seu limite calórico diário!");
-    } else if(finalFoodObject.tier === 'red' && redCount >= 2) {
-        // Alerta de excesso de alimentos não saudáveis
-        showToast("⚠️ Alerta: Você está consumindo muitos itens ultraprocessados hoje.");
-    } else {
-        showToast("🍽️ Refeição montada e salva!");
-    }
+    saveState(); closeFoodModal(); 
+    showToast("🍽️ Salvo no Diário!");
 }
 
-function removeFood(index) {
-    triggerFeedback('click');
-    dailyLog.foods.splice(index, 1); saveState();
-}
-
-// --- TREINO ---
+// --- TREINO (DASHBOARD PREMIUM E CARDS DETALHADOS) ---
 function changeWorkout(tab, btnElement) {
     triggerFeedback('click'); currentWorkoutTab = tab;
     document.querySelectorAll('.btn-tab').forEach(btn => btn.classList.remove('active-tab'));
@@ -659,21 +864,46 @@ function changeWorkout(tab, btnElement) {
 }
 
 function renderWorkout(tab) {
-    const workoutData = workoutsDB[tab];
+    if (!userData || !userData.workouts) return; 
+
+    const workoutData = userData.workouts[tab];
     document.getElementById('workout-title').innerText = workoutData.title;
+    document.getElementById('w-focus').innerText = workoutData.focus.split('/')[0].trim();
+    document.getElementById('w-ex-count').innerText = workoutData.exercises.length;
+    
     const list = document.getElementById('workout-list');
     list.innerHTML = '';
+    
     if(!dailyLog.workoutDone) dailyLog.workoutDone = { A:[], B:[], C:[] };
+    
+    let completedCount = dailyLog.workoutDone[tab].length;
+    let totalEx = workoutData.exercises.length;
+    
+    let progressPct = totalEx > 0 ? Math.round((completedCount / totalEx) * 100) : 0;
+    document.getElementById('w-progress-text').innerText = `${progressPct}%`;
+    document.getElementById('w-progress-bar').style.width = `${progressPct}%`;
+
     workoutData.exercises.forEach((ex, index) => {
         const isDone = dailyLog.workoutDone[tab].includes(index);
-        const item = document.createElement('div');
-        item.className = 'exercise-item stagger-item';
-        item.style.animationDelay = `${index * 0.05}s`;
-        item.innerHTML = `
-            <div class="ex-info"><h4>${ex.name}</h4><p>${ex.sets} séries x ${ex.reps} reps</p></div>
-            <div class="ex-check ${isDone ? 'done' : ''}" onclick="toggleExercise('${tab}', ${index}, this)">${isDone ? '✓' : ''}</div>
+        
+        const card = document.createElement('div');
+        card.className = `ex-card matte-glass stagger-item ${isDone ? 'done' : ''}`;
+        card.style.animationDelay = `${index * 0.05}s`;
+        
+        card.innerHTML = `
+            <div class="ex-header">
+                <span class="ex-title">${ex.name}</span>
+                <span class="ex-type">${ex.type}</span>
+            </div>
+            <div class="ex-details">
+                <div class="ex-chip"><i>🔄</i> ${ex.sets}x${ex.reps}</div>
+                <div class="ex-chip"><i>⏱️</i> ${ex.rest || '60s'}</div>
+            </div>
+            <button class="btn-check-ex ${isDone ? 'done' : ''}" onclick="toggleExercise('${tab}', ${index}, this)">
+                ${isDone ? '✓ Concluído' : 'Marcar como Feito'}
+            </button>
         `;
-        list.appendChild(item);
+        list.appendChild(card);
     });
 }
 
@@ -681,11 +911,12 @@ function toggleExercise(tab, index, element) {
     const isDone = dailyLog.workoutDone[tab].includes(index);
     if (isDone) {
         dailyLog.workoutDone[tab] = dailyLog.workoutDone[tab].filter(i => i !== index);
-        element.classList.remove('done'); element.innerText = ''; triggerFeedback('click');
+        triggerFeedback('click');
     } else {
         dailyLog.workoutDone[tab].push(index);
-        element.classList.add('done'); element.innerText = '✓';
-        triggerFeedback('success'); showToast("💪 Boa série!");
+        triggerFeedback('success'); 
+        showToast("💪 Excelente!");
     }
     saveState();
+    renderWorkout(tab); // Re-renderiza para atualizar a barra de progresso do dashboard
 }
