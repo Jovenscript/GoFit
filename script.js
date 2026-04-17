@@ -1,11 +1,11 @@
 /**
  * GoFit Premium Architect - Advanced NLP Nutrition Assistant
- * Pure Vanilla JS. No Forms. Natural Language Processing.
+ * Pure Vanilla JS. No Forms. Natural Language Processing & Quick Add.
  */
 
 class GoFitApp {
     constructor() {
-        this.version = '8.2.0 PRO - Auto-Macro AI Estimator';
+        this.version = '8.3.0 PRO - Auto-Macro AI & Quick Add';
         
         // --- 1. MANIFEST NUTRICIONAL & BANCOS PESSOAIS ---
         this.nutritionDB = {
@@ -44,7 +44,6 @@ class GoFitApp {
                 'f29': { name: 'Creme de Leite', baseQty: 15, macros: { cal: 37, prot: 0.3, carb: 0.7, fat: 3.5 }, tags: ['creme', 'leite', 'laticinio', 'caixinha'], category: 'c6' },
                 'f30': { name: 'Salsinha', baseQty: 10, macros: { cal: 4, prot: 0.3, carb: 0.6, fat: 0 }, tags: ['salsinha', 'tempero', 'verde'], category: 'c4' }
             },
-            // Bancos Salvos do Usuário
             userFoods: JSON.parse(localStorage.getItem('gofit_userFoods')) || {},
             userRecipes: JSON.parse(localStorage.getItem('gofit_userRecipes')) || {}
         };
@@ -52,12 +51,10 @@ class GoFitApp {
         // --- 2. MOTOR DE INTELIGÊNCIA NATURAL E CÁLCULOS ---
         this.nutritionAI = {
             
-            // NOVO: IA que estima macros com base nas palavras e categoria do alimento
             estimateMacros: (name, baseQty) => {
                 let n = name.toLowerCase();
                 let prot = 0, carb = 0, fat = 0;
                 
-                // Estimativas base para 100g baseadas em dicionário de palavras-chave
                 if (n.includes('frango') || n.includes('carne') || n.includes('peixe') || n.includes('atum') || n.includes('porco') || n.includes('bife')) { prot = 25; fat = 5; carb = 0; }
                 else if (n.includes('ovo')) { prot = 13; fat = 11; carb = 1; }
                 else if (n.includes('arroz') || n.includes('macarrao') || n.includes('massa') || n.includes('tapioca')) { carb = 28; prot = 2.5; fat = 1; }
@@ -71,12 +68,8 @@ class GoFitApp {
                 else if (n.includes('doce') || n.includes('chocolate') || n.includes('açucar') || n.includes('acucar')) { carb = 70; fat = 20; prot = 5; }
                 else if (n.includes('alface') || n.includes('brocolis') || n.includes('salada') || n.includes('cenoura') || n.includes('tomate')) { carb = 5; prot = 1; fat = 0; }
                 else if (n.includes('fruta') || n.includes('banana') || n.includes('maca') || n.includes('maçã') || n.includes('uva')) { carb = 20; prot = 1; fat = 0; }
-                else {
-                    // Fallback para alimentos totalmente desconhecidos (média equilibrada baixa)
-                    carb = 15; prot = 10; fat = 5;
-                }
+                else { carb = 15; prot = 10; fat = 5; }
 
-                // Ajusta os macros descobertos para a base informada pelo usuário
                 let mult = baseQty / 100;
                 let finalProt = prot * mult;
                 let finalCarb = carb * mult;
@@ -205,25 +198,22 @@ class GoFitApp {
             }
         };
 
-        // --- Bind de this para os submétodos ---
         this.nutritionAI.suggestFoodByText = this.nutritionAI.suggestFoodByText.bind(this);
         this.nutritionAI.calculateRecipe = this.nutritionAI.calculateRecipe.bind(this);
         this.nutritionAI.analyzeIngredient = this.nutritionAI.analyzeIngredient.bind(this);
 
         this.activeAssistantData = { mealId: '', parsedItems: [], totalMacros: null };
 
-        // Treinos DB Original Mantido
         this.db = {
             exercises: {
                 'p1': { name: 'Supino Reto com Barra', group: 'Peitoral', sets: '4x 8-10', type: 'Força', image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80', steps: ['Deite-se no banco mantendo os pés firmes no chão.', 'Segure a barra com uma largura ligeiramente maior que os ombros.', 'Desça a barra controladamente até encostar no peitoral médio.', 'Empurre a barra de volta à posição inicial estendendo os braços.'] },
                 'p2': { name: 'Supino Inclinado com Halteres', group: 'Peitoral', sets: '3x 10-12', type: 'Hipertrofia', image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=600&q=80', steps: ['Ajuste o banco em uma inclinação de 30 a 45 graus.', 'Com um halter em cada mão, posicione-os na altura do peito.', 'Empurre os halteres para cima até que se encontrem.', 'Retorne controladamente à posição inicial.'] },
-                'l1': { name: 'Agachamento Livre', group: 'Pernas', sets: '4x 8-10', type: 'Força', image: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&w=600&q=80', steps: ['Posicione a barra confortavelmente nos trapézios.', 'Mantenha os pés na largura dos ombros.', 'Agache flexionando joelhos e quadril como se fosse sentar.', 'Suba empurrando o chão através dos calcanhares.'] },
+                'l1': { name: 'Agachamento Livre', group: 'Pernas', sets: '4x 8-10', type: 'Força', image: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&w=600&q=80', steps: ['Posicione a barra confortavelmente nos trapézios.', 'Mantenha os pés na largura dos shoulders.', 'Agache flexionando joelhos e quadril como se fosse sentar.', 'Suba empurrando o chão através dos calcanhares.'] },
                 'a1': { name: 'Rosca Direta', group: 'Braços', sets: '3x 10', type: 'Hipertrofia', image: 'https://images.unsplash.com/photo-1581009137042-c552e485697a?auto=format&fit=crop&w=600&q=80', steps: ['Em pé, segure a barra com as palmas voltadas para cima.', 'Mantenha os cotovelos colados ao corpo.', 'Flexione os braços levantando o peso até contrair o bíceps.', 'Desça a barra devagar.'] }
             },
             workouts: { 'SEG': ['p1', 'p2'], 'TER': ['l1'], 'QUA': ['a1'], 'QUI': [], 'SEX': ['p1'] }
         };
 
-        // --- AS 7 REFEIÇÕES RESTAURADAS ---
         this.mealTemplates = [
             { id: 'cafe', name: 'Café da Manhã', icon: 'fa-mug-saucer', time: '07:00', split: 0.20 },
             { id: 'lanche_manha', name: 'Lanche da Manhã', icon: 'fa-apple-whole', time: '10:00', split: 0.10 },
@@ -503,7 +493,7 @@ class GoFitApp {
         return { tCal, tProt, tCarb, tFat };
     }
 
-    // --- RENDERIZAÇÃO BASE ---
+    // --- RENDERIZAÇÃO BASE (Dashboard) ---
     updateHomeUI() {
         if(!this.user) return;
         document.getElementById('header-date').innerText = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -551,6 +541,7 @@ class GoFitApp {
                     </div>
                 </li>`).join('') + `</ul>`;
 
+            // INSERIDO O NOVO BOTÃO DE ACESSO RÁPIDO AO BANCO SALVO
             c.innerHTML += `
                 <div class="meal-card-pro p-4 flex flex-col justify-between ${isCompleted ? 'completed' : ''}">
                     <div>
@@ -566,9 +557,14 @@ class GoFitApp {
                         </div>
                         ${ulHtml}
                     </div>
-                    <button onclick="app.openSmartAssistant('${m.id}')" class="mt-4 w-full py-2.5 rounded-xl bg-dark-900 text-gold-500 font-bold text-xs border border-gold-500/20 hover:bg-gold-500 hover:text-dark-900 transition-all">
-                        <i class="fa-solid fa-microphone-lines mr-1"></i> Ditar Refeição
-                    </button>
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="app.openSmartAssistant('${m.id}')" class="flex-[2] py-2.5 rounded-xl bg-dark-900 text-gold-500 font-bold text-xs border border-gold-500/20 hover:bg-gold-500 hover:text-dark-900 transition-all">
+                            <i class="fa-solid fa-microphone-lines mr-1"></i> Ditar
+                        </button>
+                        <button onclick="app.openQuickMealSelect('${m.id}')" class="flex-[1] py-2.5 rounded-xl bg-dark-900 text-blue-400 font-bold text-xs border border-blue-500/20 hover:bg-blue-500 hover:text-dark-900 transition-all">
+                            <i class="fa-solid fa-bookmark mr-1"></i> Salvos
+                        </button>
+                    </div>
                 </div>
             `;
         });
@@ -856,8 +852,97 @@ class GoFitApp {
 
 
     // ============================================================================
-    // GERENCIADOR DE BANCO DE DADOS PESSOAL E ABA DE RECEITAS
+    // GERENCIADOR DE BANCO DE DADOS PESSOAL E ADIÇÃO RÁPIDA (QUICK ADD)
     // ============================================================================
+
+    // NOVO: Adição rápida no Dashboard
+    openQuickMealSelect(mealId) {
+        this.feedback('click');
+        const mObj = document.getElementById('modal-container');
+        
+        let htmlList = '';
+        
+        Object.keys(this.nutritionDB.userRecipes).forEach(k => {
+            const item = this.nutritionDB.userRecipes[k];
+            htmlList += `
+                <button onclick="app.quickAdd('${k}', 'userRecipe', '${mealId}')" class="w-full glass-card p-3 mb-2 flex justify-between items-center border border-gold-500/20 hover:bg-gold-500/10 active:scale-95 transition-all text-left">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-dark-900 border border-gold-500/30 flex items-center justify-center text-gold-500"><i class="fa-solid fa-book-open text-xs"></i></div>
+                        <div>
+                            <span class="text-xs font-bold text-white block">${item.name}</span>
+                            <span class="text-[10px] text-gray-400">Adicionar 1 Porção Rendida (${item.totalWeight}g)</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-plus text-gold-500 text-lg"></i>
+                </button>
+            `;
+        });
+
+        Object.keys(this.nutritionDB.userFoods).forEach(k => {
+            const item = this.nutritionDB.userFoods[k];
+            htmlList += `
+                <button onclick="app.quickAdd('${k}', 'userFood', '${mealId}')" class="w-full glass-card p-3 mb-2 flex justify-between items-center border border-blue-500/20 hover:bg-blue-500/10 active:scale-95 transition-all text-left">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-dark-900 border border-blue-500/30 flex items-center justify-center text-blue-400"><i class="fa-solid fa-apple-whole text-xs"></i></div>
+                        <div>
+                            <span class="text-xs font-bold text-white block">${item.name}</span>
+                            <span class="text-[10px] text-gray-400">Adicionar 1 Unidade (${item.baseQty}g)</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-plus text-blue-400 text-lg"></i>
+                </button>
+            `;
+        });
+
+        if(htmlList === '') {
+            htmlList = '<div class="text-center text-gray-600 text-xs py-8 border border-dashed border-white/10 rounded-xl">Você ainda não possui alimentos ou receitas salvas.<br>Vá na aba <b>"Receitas"</b> para cadastrar!</div>';
+        }
+
+        mObj.innerHTML = `
+            <div id="quick-select-modal" class="fixed inset-0 bg-dark-900/95 backdrop-blur-xl z-[150] flex flex-col animate-slide-up">
+                <div class="p-5 border-b border-white/5 flex justify-between items-center bg-dark-900">
+                    <div>
+                        <p class="text-[10px] text-blue-400 uppercase font-bold tracking-widest">Acesso Rápido</p>
+                        <h2 class="text-xl font-extrabold text-white capitalize">${mealId.replace('_', ' ')}</h2>
+                    </div>
+                    <button onclick="document.getElementById('quick-select-modal').remove()" class="w-10 h-10 rounded-full bg-dark-800 text-gray-400 flex items-center justify-center hover:bg-white/10 transition-colors">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                <div class="p-5 flex-1 overflow-y-auto">
+                    <p class="text-xs text-gray-400 mb-4 leading-relaxed">Clique para adicionar instantaneamente a quantidade padrão ao seu prato.</p>
+                    ${htmlList}
+                </div>
+            </div>
+        `;
+    }
+
+    // NOVO: Executa a adição diretamente
+    quickAdd(itemId, type, mealId) {
+        this.feedback('success');
+        let dbRef = type === 'userFood' ? this.nutritionDB.userFoods[itemId] : this.nutritionDB.userRecipes[itemId];
+        if(!dbRef) return;
+        
+        let qty = type === 'userFood' ? dbRef.baseQty : dbRef.totalWeight;
+        let macros = this.nutritionAI.analyzeIngredient(itemId, qty, type);
+        
+        if(macros) {
+            this.daily.meals[mealId].push({
+                id: itemId,
+                name: dbRef.name,
+                qty: qty,
+                ...macros
+            });
+            this.save();
+            this.updateHomeUI();
+            
+            const m = document.getElementById('quick-select-modal');
+            if(m) m.remove();
+
+            this.showCustomAlert(`Adicionado: <b>1 porção (${qty}g)</b> de ${dbRef.name} ao seu ${mealId.replace('_', ' ')}!`, 'Feito', 'fa-check-circle');
+        }
+    }
+
 
     renderReceitasUI() {
         const c = document.getElementById('user-db-list');
@@ -865,7 +950,6 @@ class GoFitApp {
         
         let hasItems = false;
 
-        // Render User Recipes
         Object.keys(this.nutritionDB.userRecipes).forEach(k => {
             hasItems = true;
             const item = this.nutritionDB.userRecipes[k];
@@ -885,7 +969,6 @@ class GoFitApp {
             `;
         });
 
-        // Render User Foods
         Object.keys(this.nutritionDB.userFoods).forEach(k => {
             hasItems = true;
             const item = this.nutritionDB.userFoods[k];
@@ -968,7 +1051,6 @@ class GoFitApp {
         btn.classList.add('bg-blue-500/50');
         btn.disabled = true;
 
-        // Simulando delay de API de IA para gerar feedback visual de processamento
         setTimeout(() => {
             const macros = this.nutritionAI.estimateMacros(name, baseQty);
             const id = 'uf_' + Date.now();
@@ -1054,7 +1136,7 @@ class GoFitApp {
                 this.save();
                 document.getElementById('custom-recipe-builder').remove();
                 this.renderReceitasUI();
-                this.showCustomAlert('A receita foi salva e já pode ser interpretada pelo Assistente IA na tela Inicial!', 'Sucesso', 'fa-check-circle');
+                this.showCustomAlert('A receita foi salva e já pode ser adicionada pelo botão "Salvos" no Dashboard!', 'Sucesso', 'fa-check-circle');
             },
             "Revisão da Receita"
         );
