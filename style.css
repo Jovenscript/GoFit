@@ -26,7 +26,7 @@ body { margin: 0; padding: 0; display: flex; justify-content: center; background
 }
 
 .animate-slide-up { animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+.animate-fade-in { animation: fadeIn 0.2s ease-out forwards; }
 .pulse-glow { animation: pulseGlow 2s infinite; }
 
 /* Componentes Visuais */
@@ -42,7 +42,7 @@ body { margin: 0; padding: 0; display: flex; justify-content: center; background
     box-shadow: 0 0 30px rgba(212, 175, 55, 0.1), inset 0 0 20px rgba(212, 175, 55, 0.05);
 }
 
-/* Carrossel de Refeições (Card Específico) */
+/* Carrossel de Refeições */
 .meal-card-pro {
     background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
     border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px;
@@ -92,3 +92,8 @@ ol.custom-counter li::before {
     color: #D4AF37; border-radius: 50%; display: flex; align-items: center; justify-content: center;
     font-size: 10px; font-weight: bold;
 }
+
+/* Assistant UI Elements */
+.qty-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
+.qty-btn { background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 5px; border-radius: 12px; font-weight: bold; font-size: 12px; transition: all 0.2s; }
+.qty-btn:active, .qty-btn.selected { background: #D4AF37; color: #000; border-color: #D4AF37; transform: scale(0.95); }
